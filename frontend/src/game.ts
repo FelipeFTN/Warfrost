@@ -1,47 +1,51 @@
 import * as Phaser from 'phaser';
 
-export default class Demo extends Phaser.Scene
-{
-    constructor ()
-    {
-        super('demo');
-    }
+class Warfrost extends Phaser.Scene {
+  constructor() {
+    super("Warfrost");
+  }
 
-    preload ()
-    {
-        this.load.image('logo', 'assets/phaser3-logo.png');
-        this.load.image('libs', 'assets/libs.png');
-        this.load.glsl('bundle', 'assets/plasma-bundle.glsl.js');
-        this.load.glsl('stars', 'assets/starfields.glsl.js');
-    }
+  preload() {
+    this.load.image("map", "assets/map.png");
+    this.load.image("player", "assets/player.png");
+  }
 
-    create ()
-    {
-        this.add.shader('RGB Shift Field', 0, 0, 800, 600).setOrigin(0);
+  create() {
+    // Add the map
+    const map = this.add.image(0, 0, "map").setOrigin(0);
 
-        this.add.shader('Plasma', 0, 412, 800, 172).setOrigin(0);
+    // Add the player sprite
+    const player = this.add.sprite(100, 100, "player");
+    player.setDepth(1); // Ensure the player sprite is rendered on top of the map
 
-        this.add.image(400, 300, 'libs');
+    // Enable cursor keys for player movement
+    const cursors = this.input.keyboard.createCursorKeys();
 
-        const logo = this.add.image(400, 70, 'logo');
+    // Update player movement
+    this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
+      const speed = 10;
 
-        this.tweens.add({
-            targets: logo,
-            y: 350,
-            duration: 1500,
-            ease: 'Sine.inOut',
-            yoyo: true,
-            repeat: -1
-        })
-    }
+      if (cursors.left?.isDown) {
+        player.x -= speed;
+      } else if (cursors.right?.isDown) {
+        player.x += speed;
+      }
+
+      if (cursors.up?.isDown) {
+        player.y -= speed;
+      } else if (cursors.down?.isDown) {
+        player.y += speed;
+      }
+    });
+  }
 }
 
-const config = {
-    type: Phaser.AUTO,
-    backgroundColor: '#125555',
-    width: 800,
-    height: 600,
-    scene: Demo
+const config: Phaser.Types.Core.GameConfig = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  scene: Warfrost,
+  pixelArt: true,
 };
 
 const game = new Phaser.Game(config);
