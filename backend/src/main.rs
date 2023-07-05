@@ -1,3 +1,7 @@
+#[path = "game/networking.rs"] mod networking;
+
 fn main() {
-    println!("Hello, world!");
+    networking::start_connection();
+
+    // work in progress
 }
