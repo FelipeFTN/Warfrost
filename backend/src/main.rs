@@ -1,7 +1,6 @@
-#[path = "game/networking.rs"] mod networking;
+pub mod network;
 
 fn main() {
-    networking::start_connection();
+    network::server::main();
 
-    // work in progress
 }
