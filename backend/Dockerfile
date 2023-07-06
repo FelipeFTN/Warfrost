@@ -3,7 +3,7 @@ FROM rust:1.67
 
 # Copy from machine to docker
 WORKDIR /usr/src/warfrost
-COPY ../backend/ ./
+COPY . .
 
 # Set Environment Variables
 ENV PORT=8080
@@ -19,5 +19,8 @@ CMD ["./target/release/warfrost"]
 # Build and Run the Docker Image
 #
 # $ docker build -t felipeftn/warfrost-backend:1.0 .
-# $ docker run -it --rm --name container-warfrost-backend warfrost-backend
+# OR:
+# $ docker buildx -t felipeftn/warfrost-backend:1.0 .
+# THEN:
+# $ docker run -it -d --rm --name container-warfrost-backend docker.io/felipeftn/warfrost-back-end:1.0
 #
