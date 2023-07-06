@@ -1,40 +1,31 @@
 import * as Phaser from 'phaser';
 
 class Warfrost extends Phaser.Scene {
+  private player: Phaser.GameObjects.Sprite;
+
   constructor() {
     super("Warfrost");
+    this.player = null;
   }
 
   preload() {
-    this.load.image("map", "assets/map.png");
-    this.load.image("player", "assets/player.png");
+    this.load.image("map", "../assets/map.png");
+    this.load.image("player", "../assets/player.png");
   }
 
   create() {
-    // Add the map
     const map = this.add.image(0, 0, "map").setOrigin(0);
+    this.player = this.add.sprite(100, 100, "player");
+    this.player.setDepth(1);
 
-    // Add the player sprite
-    const player = this.add.sprite(100, 100, "player");
-    player.setDepth(1); // Ensure the player sprite is rendered on top of the map
+    this.CursorHandler();
+  }
 
-    // Enable cursor keys for player movement
-    const cursors = this.input.keyboard.createCursorKeys();
-
-    // Update player movement
-    this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
-      const speed = 10;
-
-      if (cursors.left?.isDown) {
-        player.x -= speed;
-      } else if (cursors.right?.isDown) {
-        player.x += speed;
-      }
-
-      if (cursors.up?.isDown) {
-        player.y -= speed;
-      } else if (cursors.down?.isDown) {
-        player.y += speed;
+  private CursorHandler() {
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (pointer.leftButtonDown()) {
+        const { x, y } = pointer.position;
+        // Send X and Y to Server - port 8080
       }
     });
   }
