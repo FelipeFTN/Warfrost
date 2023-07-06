@@ -8,8 +8,6 @@ COPY . .
 # Set Environment Variables
 ENV PORT=8080
 
-EXPOSE ${PORT}
-
 # Build program for release
 RUN cargo build --release
 
@@ -18,9 +16,9 @@ CMD ["./target/release/warfrost"]
 
 # Build and Run the Docker Image
 #
-# $ docker build -t felipeftn/warfrost-backend:1.0 .
+# $ docker build -t warfrost-backend .
 # OR:
-# $ docker buildx -t felipeftn/warfrost-backend:1.0 .
+# $ docker buildx build -t warfrost-backend .
 # THEN:
-# $ docker run -it -d --rm --name container-warfrost-backend docker.io/felipeftn/warfrost-back-end:1.0
+# $ docker run -it -d -p 8080:8080 --name container-warfrost-backend warfrost-backend
 #
