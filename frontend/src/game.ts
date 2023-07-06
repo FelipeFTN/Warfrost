@@ -9,8 +9,8 @@ class Warfrost extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("map", "../assets/map.png");
-    this.load.image("player", "../assets/player.png");
+    this.load.image("map", "assets/map.png");
+    this.load.image("player", "assets/player.png");
   }
 
   create() {
