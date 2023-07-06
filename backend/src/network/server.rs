@@ -1,10 +1,20 @@
+#![allow(unused_assignments)]
+
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpStream, TcpListener};
+use std::env;
 use std::io;
 
 #[tokio::main]
 pub async fn main() -> io::Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:8080").await?;
+    let mut port = String::new();
+    match env::var("PORT") {
+        Ok(val) => { port = val; },
+        Err(_) =>  { port = "8080".to_string(); },
+    };
+
+    let host = format!("{}:{}", "127.0.0.1", port);
+    let listener = TcpListener::bind(host).await?;
 
     loop {
         let (socket, _) = listener.accept().await?;
