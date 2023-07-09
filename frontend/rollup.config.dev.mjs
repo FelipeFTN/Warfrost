@@ -1,3 +1,4 @@
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 import commonjs from '@rollup/plugin-commonjs';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
@@ -19,7 +20,10 @@ export default {
         file: './dist/game.js',
         name: 'Warfrost',
         format: 'iife',
-        sourcemap: true
+        sourcemap: true,
+        globals: {
+          net: 'net'
+        }
     },
 
     plugins: [
@@ -54,6 +58,8 @@ export default {
             sourceMap: true,
             ignoreGlobal: true
         }),
+
+        nodePolyfills( /* options */ ),
 
         //  See https://github.com/rollup/plugins/tree/master/packages/typescript for config options
         typescript(),

@@ -1,5 +1,7 @@
 import * as Phaser from 'phaser';
 
+import Network from './network/main'
+
 class Warfrost extends Phaser.Scene {
   private player: Phaser.GameObjects.Sprite;
 
@@ -14,7 +16,7 @@ class Warfrost extends Phaser.Scene {
   }
 
   create() {
-    const map = this.add.image(0, 0, "map").setOrigin(0);
+    this.add.image(0, 0, "map").setOrigin(0);
     this.player = this.add.sprite(100, 100, "player");
     this.player.setDepth(1);
 
@@ -25,7 +27,9 @@ class Warfrost extends Phaser.Scene {
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (pointer.leftButtonDown()) {
         const { x, y } = pointer.position;
+
         // Send X and Y to Server - port 8080
+        Network(`${x}:${y}`);
       }
     });
   }
