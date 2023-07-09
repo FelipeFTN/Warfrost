@@ -1,54 +1,42 @@
-#![allow(unused_assignments)]
-
+use std::str;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::{TcpStream, TcpListener};
-use std::env;
-use std::io;
+use tokio::net::TcpListener;
 
 #[tokio::main]
-pub async fn main() -> io::Result<()> {
-    let mut port = String::new();
-    match env::var("PORT") {
-        Ok(val) => { port = val; },
-        Err(_) =>  { port = "8080".to_string(); },
-    };
-
-    let host = format!("{}:{}", "127.0.0.1", port);
-    let listener = TcpListener::bind(host).await?;
+pub async fn start() -> Result<(), Box<dyn std::error::Error>> {
+    let listener = TcpListener::bind("127.0.0.1:8080").await?;
 
     loop {
-        let (socket, _) = listener.accept().await?;
+        let (mut socket, _) = listener.accept().await?;
 
         tokio::spawn(async move {
-            // Process each socket concurrently.
-            process(socket).await
+            let mut buf = [0; 1024];
+
+            // In a loop, read data from the socket and write the data back.
+            loop {
+                match socket.read(&mut buf).await {
+                    // socket closed
+                    Ok(n) if n == 0 => return,
+                    Ok(n) => n,
+                    Err(e) => {
+                        eprintln!("failed to read from socket; err = {:?}", e);
+                        return;
+                    }
+                };
+
+                let s = match str::from_utf8(&buf) {
+                    Ok(v) => v,
+                    Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
+                };
+
+                println!("result: {}", s);
+
+                // Write the data back
+                if let Err(e) = socket.write_all(s.as_bytes()).await {
+                    eprintln!("failed to write to socket; err = {:?}", e);
+                    return;
+                }
+            }
         });
     }
 }
-
-async fn process(socket: TcpStream) {
-    let mut socket_instance = socket;
-    // Read data from the stream
-    let mut buffer = vec![0; 1024];
-        let read_bytes = match socket_instance.read(&mut buffer).await {
-        Ok(n) => n,
-        Err(err) => {
-            eprintln!("Error reading from socket: {}", err);
-            return;
-        }
-    };
-
-    // Convert the received data to a string
-    let received_data = String::from_utf8_lossy(&buffer[..read_bytes]);
-
-    // Print the incoming request
-    println!("Received request: {}", received_data);
-
-    // Write a response back to the client
-    let response = "Hello from the server!";
-        if let Err(err) = socket_instance.write_all(response.as_bytes()).await {
-        eprintln!("Error writing response to socket: {}", err);
-        return;
-    }
-}
-
