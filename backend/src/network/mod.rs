@@ -1,2 +1,2 @@
 // Modules for Network
-pub mod server;
+pub mod websocket;
