@@ -1,16 +1,20 @@
 import * as Phaser from 'phaser';
 
-import Network from './network/main'
+import Socket from './network/websocket'
 
 class Warfrost extends Phaser.Scene {
   private player: Phaser.GameObjects.Sprite;
+  private socket: Socket;
 
   constructor() {
     super("Warfrost");
     this.player = null;
+    this.socket = new Socket("127.0.0.1", 8080);
   }
 
   preload() {
+    this.socket.connect();
+
     this.load.image("map", "assets/map.png");
     this.load.image("player", "assets/player.png");
   }
@@ -29,7 +33,7 @@ class Warfrost extends Phaser.Scene {
         const { x, y } = pointer.position;
 
         // Send X and Y to Server - port 8080
-        Network(`${x}:${y}`);
+        this.socket.send(`x: ${x}, y: ${y}`);
       }
     });
   }
