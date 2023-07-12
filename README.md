@@ -1,6 +1,6 @@
 # Warfrost - Rise of Chaos
 
-![Warfrost Logo](warfrost-logo.png)
+<img src="./warfrost-logo.png" alt="Warfrost" align=right>
 
 Warfrost is an immersive real-time strategy (RTS) game set in a Realm of Chaos. Engage in epic battles, command mythical creatures, and lead your faction to victory in a war-torn world.
 ## How It Works
