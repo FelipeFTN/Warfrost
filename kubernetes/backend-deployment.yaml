@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: warfrost-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: warfrost-backend
+  template:
+    metadata:
+      labels:
+        app: warfrost-backend
+    spec:
+      containers:
+        - name: warfrost-backend
+          image: warfrost-backend:latest
+          ports:
+            - containerPort: 8080

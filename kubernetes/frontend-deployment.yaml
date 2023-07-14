@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: warfrost-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: warfrost-frontend
+  template:
+    metadata:
+      labels:
+        app: warfrost-frontend
+    spec:
+      containers:
+        - name: warfrost-frontend
+          image: warfrost-frontend:latest
+          ports:
+            - containerPort: 80
