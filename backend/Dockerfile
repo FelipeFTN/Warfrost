@@ -1,5 +1,5 @@
 # Rust official image
-FROM rust:1.67
+FROM rust:1.67-slim
 
 # Copy from machine to docker
 WORKDIR /usr/src/warfrost
