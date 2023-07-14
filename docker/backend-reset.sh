@@ -14,4 +14,4 @@ docker image rm warfrost-backend
 docker buildx build -t warfrost-backend .
 
 # Run Container
-docker run -it -d -p 80:80 --name container-warfrost-backend warfrost-backend
+docker run -it -d -p 8080:8080 --name container-warfrost-backend warfrost-backend
