@@ -3,8 +3,6 @@ name: Docker Warfrost
 on:
   push:
     branches: [ "master", "next" ]
-  pull_request:
-    branches: [ "master" ]
 
 jobs:
 
