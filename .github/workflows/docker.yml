@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Warfrost
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
 
-  build:
+  warfrost-docker:
 
     runs-on: ubuntu-latest
 
@@ -17,18 +17,14 @@ jobs:
     - name: Create Network
       run: docker network create --subnet=172.20.0.0/16 warfrost-network
 
-    - uses: actions/checkout@v3
     - name: Build the Warfrost back-end image
       run: docker buildx build -t warfrost-backend ./backend/
 
-    - uses: actions/checkout@v3
     - name: Build the Warfrost front-end image
       run: docker buildx build -t warfrost-frontend ./frontend/
 
-    - uses: actions/checkout@v3
     - name: Run docker back-end image
       run: docker run -itd -p 8080:8080 --net warfrost-network --ip 172.20.0.2 --name container-warfrost-backend warfrost-backend
 
-    - uses: actions/checkout@v3
     - name: Run docker front-end image
       run: docker run -itd -p 80:80 --net warfrost-network --ip 172.20.0.3 --name container-warfrost-frontend warfrost-frontend
