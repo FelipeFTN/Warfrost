@@ -33,7 +33,9 @@ export default {
             'typeof EXPERIMENTAL': JSON.stringify(true),
             'typeof PLUGIN_CAMERA3D': JSON.stringify(false),
             'typeof PLUGIN_FBINSTANT': JSON.stringify(false),
-            'typeof FEATURE_SOUND': JSON.stringify(true)
+            'typeof FEATURE_SOUND': JSON.stringify(true),
+            'process.env.HOST': JSON.stringify(process.env.HOST || "localhost"),
+            'process.env.PORT': JSON.stringify(process.env.PORT || "8080"),
         }),
 
         //  Parse our .ts source files

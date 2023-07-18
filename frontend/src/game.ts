@@ -12,7 +12,7 @@ class Warfrost extends Phaser.Scene {
     super("Warfrost");
     this.player = null;
     this.playerPosition = { x: 100, y: 100 };
-    this.socket = new Socket("172.20.0.2", 8080);
+    this.socket = new Socket(process.env.HOST, process.env.PORT);
   }
 
   preload() {

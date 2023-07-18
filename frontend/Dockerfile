@@ -22,7 +22,8 @@ RUN npm install
 COPY . .
 
 # Set Environment Variables
-ENV PORT=80
+ENV PORT=8080
+ENV HOST=172.20.0.2
 
 # Build Phaser game
 RUN npm run build

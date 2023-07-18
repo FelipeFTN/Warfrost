@@ -3,11 +3,11 @@ class Socket {
 
   private host: string;
 
-  private port: number;
+  private port: string;
 
   private move: any;
 
-  constructor(host: string, port: number) {
+  constructor(host: string, port: string) {
     this.host = host;
     this.port = port;
   }
