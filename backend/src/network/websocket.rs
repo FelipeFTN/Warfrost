@@ -27,9 +27,12 @@ pub fn start() {
                     // retrieve this client's 'Responder':
                     let responder = clients.get(&client_id).unwrap();
 
-                    if text.contains("x") && text.contains("y") {
-                        let (x, y) = get_coordinates(text.to_string());
-                        responder.send(Message::Text(format!("move:x{}y{}", x, y)));
+                    // this code is far from being good.
+                    // I will be updating it later.
+                    if text.contains("mouse") {
+                        if let Some((x, y)) = get_coordinates(text.to_string()) {
+                            responder.send(Message::Text(format!("player#0:move:x{}y{}", x, y)));
+                        } else { responder.send(Message::Text(format!("Error: {:?}", text))); }
                     } else { responder.send(Message::Text("Hello! :)".to_string())); }
                 }
             }
@@ -37,18 +40,13 @@ pub fn start() {
     }
 }
 
-fn get_coordinates(text: String) -> (i32, i32) {
-    let (mut x, mut y) = (0, 0);
-
-    for part in text.split(", ") {
-        let (key, value) = part.split_once(':').unwrap();
-
-        match key.trim() {
-            "x" => x = value.trim().parse().unwrap(),
-            "y" => y = value.trim().parse().unwrap(),
-            _ => {}
-        }
+fn get_coordinates(text: String) -> Option<(i32, i32)> {
+    let regex = regex::Regex::new(r"x(\d+)y(\d+)").unwrap();
+    if let Some(captures) = regex.captures(&text) {
+        let x = captures.get(1).unwrap().as_str().parse::<i32>().unwrap();
+        let y = captures.get(2).unwrap().as_str().parse::<i32>().unwrap();
+        Some((x, y))
+    } else {
+        None
     }
-
-    (x, y)
 }

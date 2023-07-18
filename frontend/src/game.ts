@@ -4,14 +4,11 @@ import Socket from './network/websocket'
 
 class Warfrost extends Phaser.Scene {
   private player: Phaser.GameObjects.Sprite;
-  private playerPosition: any;
   private socket: Socket;
-  private move: any;
 
   constructor() {
     super("Warfrost");
     this.player = null;
-    this.playerPosition = { x: 100, y: 100 };
     this.socket = new Socket(process.env.HOST, process.env.PORT);
   }
 
@@ -23,29 +20,25 @@ class Warfrost extends Phaser.Scene {
   }
 
   create() {
+    this.player = this.add.sprite(100, 100, "player");
     this.add.image(0, 0, "map").setOrigin(0);
-    this.player = this.add.sprite(this.playerPosition.x, this.playerPosition.y, "player");
     this.player.setDepth(1);
 
+    console.log(this.player);
+
     this.CursorHandler();
-    this.move = this.socket.getMove();
-    if (this.move) {
-      this.playerPosition.x = this.move.x;
-      this.playerPosition.y = this.move.y;
-    }
   }
 
   update() {
-    this.player.setPosition(this.playerPosition.x, this.playerPosition.y);
+    this.player.setPosition(this.player.x, this.player.y);
+    this.socket.on("move", this.player);
   }
 
   private CursorHandler() {
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
       if (pointer.leftButtonDown()) {
         const { x, y } = pointer.position;
-
-        // Send X and Y to Server - port 8080
-        this.socket.send(`x: ${x}, y: ${y}`);
+        this.socket.send(`mouse:x${x}y${y}`);
       }
     });
   }
