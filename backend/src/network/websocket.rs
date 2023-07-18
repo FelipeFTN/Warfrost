@@ -1,11 +1,10 @@
-use simple_websockets::{Event, Responder, Message};
+use simple_websockets::{Event, Message, Responder};
 use std::collections::HashMap;
 
 pub fn start() {
     // Listen for WebSockets on port 8080:
-    let event_hub = simple_websockets::launch(8080)
-        .expect("failed to listen on port 8080.");
-    
+    let event_hub = simple_websockets::launch(8080).expect("failed to listen on port 8080.");
+
     // map between client ids & client's 'Responder':
     let mut clients: HashMap<u64, Responder> = HashMap::new();
 
@@ -16,21 +15,40 @@ pub fn start() {
                 println!("A client connected with id #{}.", client_id);
                 // add their Responser to our 'clients' map:
                 clients.insert(client_id, responder);
-            },
+            }
             Event::Disconnect(client_id) => {
                 println!("A client with id #{} disconnected.", client_id);
                 // add their Responser to our 'clients' map:
                 clients.remove(&client_id);
-            },
+            }
             Event::Message(client_id, message) => {
                 if let Message::Text(text) = &message {
                     println!("Received a message from client #{}: {}", client_id, text);
-                } 
-                // retrieve this client's 'Responder':
-                let responder = clients.get(&client_id).unwrap();
-                // echo the message back;
-                responder.send(message);
-            },
-        }    
+                    // retrieve this client's 'Responder':
+                    let responder = clients.get(&client_id).unwrap();
+
+                    if text.contains("x") && text.contains("y") {
+                        let (x, y) = get_coordinates(text.to_string());
+                        responder.send(Message::Text(format!("move:x{}y{}", x, y)));
+                    } else { responder.send(Message::Text("Hello! :)".to_string())); }
+                }
+            }
+        }
     }
+}
+
+fn get_coordinates(text: String) -> (i32, i32) {
+    let (mut x, mut y) = (0, 0);
+
+    for part in text.split(", ") {
+        let (key, value) = part.split_once(':').unwrap();
+
+        match key.trim() {
+            "x" => x = value.trim().parse().unwrap(),
+            "y" => y = value.trim().parse().unwrap(),
+            _ => {}
+        }
+    }
+
+    (x, y)
 }
