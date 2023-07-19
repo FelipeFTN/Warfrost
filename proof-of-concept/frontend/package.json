@@ -1,9 +1,11 @@
 {
   "dependencies": {
-    "@types/node": "^20.4.1",
     "@types/ws": "^8.5.5",
     "tsc": "^2.0.4",
     "typescript": "^5.1.6",
     "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.4.2"
   }
 }
