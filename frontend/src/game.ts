@@ -13,6 +13,9 @@ class Warfrost extends Phaser.Scene {
   }
 
   preload() {
+    document.addEventListener('contextmenu', function (event) {
+      event.preventDefault();
+    });
     this.socket.connect();
 
     this.load.image("map", "assets/map.png");
@@ -36,9 +39,9 @@ class Warfrost extends Phaser.Scene {
 
   private CursorHandler() {
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      if (pointer.leftButtonDown()) {
+      if (pointer.rightButtonDown()) {
         const { x, y } = pointer.position;
-        this.socket.send(`mouse:x${x}y${y}`);
+        this.socket.send(`mouse:right:click:x${x}y${y}`);
       }
     });
   }

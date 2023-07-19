@@ -54,14 +54,15 @@ class Socket {
   }
 
   moveHandler(coordinates: string) {
-    const regex = /player#(\d+):move:x(\d+)y(\d+)/;
+    const regex = /object#(\d+):move:x(\d+)y(\d+)/;
     const matches = coordinates.match(regex);
 
     if (matches && matches.length === 4) {
+      const id = parseInt(matches[1]);
       const x = parseInt(matches[2]);
       const y = parseInt(matches[3]);
 
-      return { x, y };
+      return { id, x, y };
     }
     return null;
   }
