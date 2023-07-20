@@ -38,7 +38,7 @@ class Socket {
       case "move":
         let move: any;
         if (this.message.includes("move")) {
-          if (move = this.moveHandler(this.message)) {
+          if (move = this.getCoordinates(this.message)) {
             obj.x = move.x;
             obj.y = move.y;
           }
@@ -53,7 +53,7 @@ class Socket {
     this.socket.send(message);
   }
 
-  moveHandler(coordinates: string) {
+  getCoordinates(coordinates: string) {
     const regex = /object#(\d+):move:x(\d+)y(\d+)/;
     const matches = coordinates.match(regex);
 

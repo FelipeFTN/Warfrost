@@ -18,3 +18,4 @@ pub fn find() {
     let result = bfs(&Pos(1, 1), |p| p.successors(), |p| *p == GOAL);
     assert_eq!(result.expect("no path found").len(), 5);
 }
+// Looks like we will need to use A* Algorithm, maybe build our own.

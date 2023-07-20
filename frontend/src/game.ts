@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 
+import * as WF from './warfrost/handler';
 import Socket from './network/websocket'
 
 class Warfrost extends Phaser.Scene {
@@ -24,12 +25,12 @@ class Warfrost extends Phaser.Scene {
 
   create() {
     this.player = this.add.sprite(100, 100, "player");
-    this.add.image(0, 0, "map").setOrigin(0);
+    this.add.image(0, -300, "map").setOrigin(0);
     this.player.setDepth(1);
 
     console.log(this.player);
 
-    this.CursorHandler();
+    WF.cursorHandler();
   }
 
   update() {
@@ -37,14 +38,6 @@ class Warfrost extends Phaser.Scene {
     this.socket.on("move", this.player);
   }
 
-  private CursorHandler() {
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      if (pointer.rightButtonDown()) {
-        const { x, y } = pointer.position;
-        this.socket.send(`mouse:right:click:x${x}y${y}`);
-      }
-    });
-  }
 }
 
 const config: Phaser.Types.Core.GameConfig = {
