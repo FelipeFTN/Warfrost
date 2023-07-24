@@ -30,7 +30,7 @@ class Warfrost extends Phaser.Scene {
 
     console.log(this.player);
 
-    WF.cursorHandler();
+    WF.cursorHandler(this);
   }
 
   update() {
