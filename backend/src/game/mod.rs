@@ -1,5 +1,5 @@
 // Game Modules
-pub mod game;
+pub mod warfrost;
 pub mod models;
 pub mod players;
 pub mod network;

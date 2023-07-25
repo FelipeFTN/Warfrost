@@ -2,8 +2,9 @@ use simple_websockets::{Event, Responder};
 use std::collections::HashMap;
 
 use crate::game::network::{ws_connect, ws_disconnect, ws_message};
+use crate::game::players::Players;
 
-pub fn start_network() {
+pub fn network(players: &mut Players) {
     // Listen for WebSockets on port 8080
     // TODO: Get the port from environment variable
     let event_hub = simple_websockets::launch(8080).expect("failed to listen on port 8080.");
@@ -13,14 +14,14 @@ pub fn start_network() {
 
     loop {
         match event_hub.poll_event() {
-            Event::Connect(client_id, responder) => {
-                ws_connect(client_id, &mut clients, responder);
+            Event::Connect(_client_id, responder) => {
+                ws_connect(0, &mut clients, players, responder);
             }
-            Event::Disconnect(client_id) => {
-                ws_disconnect(client_id, &mut clients);
+            Event::Disconnect(_client_id) => {
+                ws_disconnect(0, &mut clients, players);
             }
-            Event::Message(client_id, message) => {
-                ws_message(client_id, message, &mut clients);
+            Event::Message(_client_id, message) => {
+                ws_message(0, message, &mut clients, players);
             }
         }
     }

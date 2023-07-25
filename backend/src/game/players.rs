@@ -1,46 +1,78 @@
-use serde::Serialize;
 use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone)]
-struct Player {
+#[derive(Serialize, Deserialize)]
+pub struct Player {
     id: u64,
-    x: i64,
-    y: i64,
+    x: i16,
+    y: i16,
+}
+
+impl Player {
+    fn new(x: i16, y:i16) -> Self {
+        static mut NEXT_ID: u64 = 0;
+
+        // Use unsafe block to increment and assign the ID
+        let id = unsafe {
+            NEXT_ID += 1;
+            NEXT_ID
+        };
+
+        Player { id, x, y }
+    }
 }
 
 #[derive(Debug)]
-struct Players {
+#[derive(Serialize, Deserialize)]
+pub struct Players {
     players_map: HashMap<u64, Player>,
 }
 
-pub impl Players {
-    fn new() -> self {
+impl Players {
+    pub fn new() -> Self {
         Players {
             players_map: HashMap::new(),
         }
     }
 
-    fn add_player(&mut self, id: u64, x: i64, y: i64) {
-        let player = Player { id, x, y };
-        self.players_map.insert(id, player);
+    pub fn add_player(&mut self, x: i16, y: i16) {
+        let player = Player::new(x, y);
+        self.players_map.insert(player.id, player);
     }
 
-    fn remove_player(&mut self, id: u64) {
+    pub fn remove_player(&mut self, id: u64) {
         self.players_map.remove(&id);
     }
 
-    fn update_player(&mut self, id: u64, new_x: i64, new_y: i64) {
-        if let Some(Player) = self.players_map.get_mut(&id) {
+    pub fn update_player(&mut self, id: u64, new_x: i16, new_y: i16) {
+        if let Some(player) = self.players_map.get_mut(&id) {
             player.x = new_x;
             player.y = new_y;
         }
     }
 
-    fn get_player(&self, id: u64) -> Option<&Player> {
+    pub fn get_player(&self, id: u64) -> Option<&Player> {
         self.players_map.get(&id)
     }
 
-    fn get_all_players(&self) -> Vec<&Player> {
+    pub fn get_players(&self) -> Vec<&Player> {
         self.players_map.values().collect()
+    }
+
+    pub fn get_players_json(&self) -> String {
+        // Convert the HashMap to a Vec of Player structs
+        let players: Vec<Player> = self.players_map
+            .iter()
+            .map(|(&id, players)| Player {
+                id,
+                x: players.x.clone(),
+                y: players.y.clone(),
+            })
+            .collect();
+        // Serialize the Vec<Player> to a JSON string
+        let json_string = serde_json::to_string(&players).unwrap();
+
+        format!("{}", json_string)
     }
 }

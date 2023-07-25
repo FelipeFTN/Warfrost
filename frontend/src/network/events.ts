@@ -4,8 +4,8 @@ function move(message: string, WF: any) {
     if (message.includes("move")) {
         let move: any;
         if (move = utils.getCoordinates(message)) {
-            // obj.x = move.x;
-            // obj.y = move.y;
+            // WF.x = move.x;
+            // WF.y = move.y;
         }
     }
 }

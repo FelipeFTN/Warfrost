@@ -1,5 +1,8 @@
-use crate::game::game;
+mod game;
+mod network;
+
+use crate::game::warfrost::warfrost;
 
 fn main() {
-    game::warfrost();
+    warfrost();
 }

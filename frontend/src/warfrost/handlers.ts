@@ -14,7 +14,7 @@ function cursorHandler(WF: any) {
 }
 
 function playersHandler(WF: any) {
-    WF.socket.on("players::update")
+    WF.socket.on("players::update", WF);
 }
 
 export { cursorHandler, playersHandler };
