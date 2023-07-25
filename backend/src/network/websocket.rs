@@ -1,9 +1,9 @@
 use simple_websockets::{Event, Responder};
 use std::collections::HashMap;
 
-use super::utils::{ws_connect, ws_disconnect, ws_message};
+use crate::game::network::{ws_connect, ws_disconnect, ws_message};
 
-pub fn start() {
+pub fn start_network() {
     // Listen for WebSockets on port 8080
     // TODO: Get the port from environment variable
     let event_hub = simple_websockets::launch(8080).expect("failed to listen on port 8080.");

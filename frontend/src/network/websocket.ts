@@ -1,70 +1,58 @@
+import * as events from "./events";
+
 class Socket {
-  private socket: WebSocket;
+    private socket: WebSocket;
 
-  private host: string;
+    private host: string;
 
-  private port: string;
+    private port: string;
 
-  private message: string;
+    private message: string;
 
-  constructor(host: string, port: string) {
-    this.message = "";
-    this.host = host;
-    this.port = port;
-  }
+    constructor(host: string, port: string) {
+        this.message = "";
+        this.host = host;
+        this.port = port;
+    }
 
-  async connect() {
-    this.socket = new WebSocket(`ws://${this.host}:${this.port}`);
+    async connect() {
+        this.socket = new WebSocket(`ws://${this.host}:${this.port}`);
 
-    // Handle WebSocket connection open event
-    this.socket.onopen = () => {
-      console.log('WebSocket connection established');
-    };
+        // Handle WebSocket connection open event
+        this.socket.onopen = () => {
+            console.log('WebSocket connection established');
+        };
 
-    // Handle WebSocket message received event
-    this.socket.onmessage = (event: any) => {
-      this.message = event.data;
-      console.log(event.data);
-    };
+        // Handle WebSocket message received event
+        this.socket.onmessage = (event: any) => {
+            this.message = event.data;
+            console.log(event.data);
+        };
 
-    // Handle WebSocket connection close event
-    this.socket.onclose = () => {
-      console.log('Disconnected from the WebSocket server');
-    };
-  }
+        // Handle WebSocket connection close event
+        this.socket.onclose = () => {
+            console.log('Disconnected from the WebSocket server');
+        };
+    }
 
-  async on(event: string, obj: any) {
-    switch (event) {
-      case "move":
-        let move: any;
-        if (this.message.includes("move")) {
-          if (move = this.getCoordinates(this.message)) {
-            obj.x = move.x;
-            obj.y = move.y;
-          }
+    async on(event: string, WF: any) { // this code is terrible, please improve
+        switch (event) {
+            case "move":
+                events.move(this.message, WF);
+                break;
+            case "players::update":
+                events.updatePlayers(this.message, WF);
+                break;
+            default:
+                return false;
         }
-        break;
-      default:
-        break;
+        return true;
     }
-  }
 
-  async send(message: string) {
-    this.socket.send(message);
-  }
-
-  getCoordinates(coordinates: string) {
-    const regex = /object#(\d+):move:x(\d+)y(\d+)/;
-    const matches = coordinates.match(regex);
-
-    if (matches && matches.length === 4) {
-      const id = parseInt(matches[1]);
-      const x = parseInt(matches[2]);
-      const y = parseInt(matches[3]);
-
-      return { id, x, y };
+    async send(message: string) {
+        this.socket.send(message);
     }
-    return null;
-  }
+
+    getMessage(): string { return this.message; }
 }
 export default Socket;

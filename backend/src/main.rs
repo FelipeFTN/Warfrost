@@ -1,5 +1,5 @@
-mod network;
+use crate::game::game;
 
 fn main() {
-    network::websocket::start();
+    game::warfrost();
 }
