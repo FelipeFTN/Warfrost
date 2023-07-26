@@ -28,11 +28,25 @@ pub fn get_spawn() -> String {
 pub fn update_players(
     clients: &mut HashMap<u64, Responder>,
     players: &mut Players,
-    client_id: u64,
 ) {
-    let responder = clients.get(&client_id).unwrap();
-    responder.send(Message::Text(format!(
-        "players::update::{}",
-        players.get_players_json()
-    )));
+    // let responder = clients.get(&client_id).unwrap();
+    // responder.send(Message::Text(
+    //     format!(
+    //         "players::update::{}",
+    //         players.get_players_json()
+    //     )
+    // ));
+    send_all_clients(clients,
+        format!(
+            "players::update::{}",
+            players.get_players_json()
+        )
+    )
+}
+
+pub fn send_all_clients(clients: &mut HashMap<u64, Responder>, message: String) {
+    // Iterate over the clients in the HashMap using a for loop.
+    for (_, responder) in clients {
+        responder.send(Message::Text(message.clone()));
+    }
 }

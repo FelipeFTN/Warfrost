@@ -45,7 +45,7 @@ pub fn ws_connect(
     clients.insert(client_id, responder);
     if let Some((x, y)) = get_coordinates(get_spawn()) {
         players.add_player(x, y);
-        update_players(clients, players, client_id);
+        update_players(clients, players);
     } else {
         panic!("error: get_coordinates");
     }

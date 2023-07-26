@@ -14,14 +14,14 @@ pub fn network(players: &mut Players) {
 
     loop {
         match event_hub.poll_event() {
-            Event::Connect(_client_id, responder) => {
-                ws_connect(0, &mut clients, players, responder);
+            Event::Connect(client_id, responder) => {
+                ws_connect(client_id, &mut clients, players, responder);
             }
-            Event::Disconnect(_client_id) => {
-                ws_disconnect(0, &mut clients, players);
+            Event::Disconnect(client_id) => {
+                ws_disconnect(client_id, &mut clients, players);
             }
-            Event::Message(_client_id, message) => {
-                ws_message(0, message, &mut clients, players);
+            Event::Message(client_id, message) => {
+                ws_message(client_id, message, &mut clients, players);
             }
         }
     }
