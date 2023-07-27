@@ -10,6 +10,8 @@ class Warfrost extends Phaser.Scene {
 
     private players: any;
 
+    private selected: any;
+
     private socket: Socket;
 
     constructor() {
@@ -58,15 +60,25 @@ class Warfrost extends Phaser.Scene {
 
         this.playersData.forEach((player: any) => {
             if (player.id === this.clientId) { return; }
-            if (this.players[player.id]) { return; }
+            if (this.players[player.id]) { 
+                this.players[player.id].setPosition(player.x, player.y);
+                return;
+            }
 
             this.players[player.id] = this.add.sprite(player.x, player.y, "player");
+            this.players[player.id].setInteractive();
             this.players[player.id].setDepth(1);
+
+            // Checks for any player interation
+            this.players[player.id].on("pointerdown", (pointer: Phaser.Input.Pointer) => (
+                WF.playerClicked(pointer, player.id, this)
+            ));
         });
 
         let playersIds = this.playersData.map((item: any) => item.id);
 
         for (const id in this.players) {
+            // Checks if some player disconnected and destroy it
             if (!playersIds.includes(Number(id))) {
                 this.players[id].destroy();
                 delete this.players[id];
@@ -74,6 +86,7 @@ class Warfrost extends Phaser.Scene {
         }
 
         // TODO: player movement
+        this.socket.on("player::move", this);
         // this.player.setPosition(this.player.x, this.player.y);
         // this.socket.on("move", this.player);
     }

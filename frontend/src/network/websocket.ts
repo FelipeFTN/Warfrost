@@ -38,16 +38,16 @@ class Socket {
     async on(event: string, WF: any) { // this code is terrible, please improve
         switch (event) {
             case "client::id":
-                events.id(this.message, WF);
-                break;
-            case "move":
-                events.move(this.message, WF);
+                events.getId(this.message, WF);
                 break;
             case "players::update":
                 events.updatePlayers(this.message, WF);
                 break;
             case "client::disconnect":
                 events.removePlayer(this.message, WF);
+                break;
+            case "player::move":
+                events.movePlayer(this.message, WF);
                 break;
             default:
                 return false;

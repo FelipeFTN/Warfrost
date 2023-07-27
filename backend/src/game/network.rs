@@ -1,7 +1,7 @@
 use simple_websockets::{Message, Responder};
 use std::collections::HashMap;
 
-use crate::network::utils::{get_coordinates, get_spawn, update_players, send_all_clients};
+use crate::network::utils::{get_id, get_coordinates, get_spawn, update_players, send_all_clients};
 use crate::game::players::Players;
 
 // ws stands for web socket.
@@ -11,9 +11,19 @@ pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, R
         let responder = clients.get(&client_id).unwrap();
 
         match text {
-            text if text.contains("mouse:right:click") => {
+            text if text.contains("player::select") => {
+                if let Some( id ) = get_id(text.to_string()) {
+                    players.set_selected(id, true);
+                } else {
+                    responder.send(Message::Text(format!("Error: {:?}", text)));
+                }
+            }
+            text if text.contains("mouse::right::click") => {
                 if let Some((x, y)) = get_coordinates(text.to_string()) {
-                    responder.send(Message::Text(format!("object#0::move::x{}y{}", x, y)));
+                    if let Some( id ) = players.get_selected() {
+                        players.update_player(id, x, y);
+                        responder.send(Message::Text(format!("player::move::#{}::x{}y{}", id, x, y)));
+                    }
                 } else {
                     responder.send(Message::Text(format!("Error: {:?}", text)));
                 }

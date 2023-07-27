@@ -1,6 +1,6 @@
 import * as utils from "../warfrost/utils";
 
-function id(message: string, WF: any) {
+function getId(message: string, WF: any) {
     if (!message.includes("client::id")) { return; }
     let id: number;
     if (id = utils.getId(message)) {
@@ -8,12 +8,13 @@ function id(message: string, WF: any) {
     }
 }
 
-function move(message: string, WF: any) {
-    if (!message.includes("move")) { return; }
+function movePlayer(message: string, WF: any) {
+    if (!message.includes("player::move")) { return; }
     let move: any;
     if (move = utils.getCoordinates(message)) {
-        // WF.x = move.x;
-        // WF.y = move.y;
+        WF.players[move.id].setPosition(move.x, move.y);
+        // WF.players[move.id].x = move.x;
+        // WF.players[move.id].y = move.y;
     }
 }
 
@@ -37,4 +38,4 @@ function removePlayer(message: string, WF: any) {
     }
 }
 
-export { id, move, updatePlayers, removePlayer };
+export { getId, movePlayer, updatePlayers, removePlayer };

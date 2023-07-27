@@ -4,6 +4,16 @@ use std::collections::HashMap;
 
 use crate::game::players::Players;
 
+pub fn get_id(text: String) -> Option<u64> {
+    let regex = regex::Regex::new(r"#(\d+)").unwrap();
+    if let Some(captures) = regex.captures(&text) {
+        let id  = captures.get(1).unwrap().as_str().parse::<u64>().unwrap();
+        Some( id )
+    } else {
+        None
+    }
+}
+
 pub fn get_coordinates(text: String) -> Option<(i16, i16)> {
     let regex = regex::Regex::new(r"x(\d+)y(\d+)").unwrap();
     if let Some(captures) = regex.captures(&text) {
