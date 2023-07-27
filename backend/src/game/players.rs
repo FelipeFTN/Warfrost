@@ -15,8 +15,9 @@ impl Player {
 
         // Use unsafe block to increment and assign the ID
         let id = unsafe {
+            let current_id = NEXT_ID;
             NEXT_ID += 1;
-            NEXT_ID
+            current_id
         };
 
         Player { id, x, y }

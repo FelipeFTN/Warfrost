@@ -17,7 +17,7 @@ pub fn get_coordinates(text: String) -> Option<(i16, i16)> {
 
 pub fn get_spawn() -> String {
     let min_value = 20;
-    let max_value = 700;
+    let max_value = 300;
 
     let x = thread_rng().gen_range(min_value..=max_value);
     let y = thread_rng().gen_range(min_value..=max_value);
@@ -29,13 +29,6 @@ pub fn update_players(
     clients: &mut HashMap<u64, Responder>,
     players: &mut Players,
 ) {
-    // let responder = clients.get(&client_id).unwrap();
-    // responder.send(Message::Text(
-    //     format!(
-    //         "players::update::{}",
-    //         players.get_players_json()
-    //     )
-    // ));
     send_all_clients(clients,
         format!(
             "players::update::{}",

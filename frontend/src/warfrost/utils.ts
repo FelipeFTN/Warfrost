@@ -1,3 +1,15 @@
+function getId(message: string) {
+    const regex = /#(\d+)/;
+    const matches = message.match(regex);
+
+    if (matches && matches.length === 2) {
+        const id = parseInt(matches[1]);
+
+        return id;
+    }
+    return null;
+}
+
 function getCoordinates(coordinates: string) {
     const regex = /#(\d+)[\w:]+x(\d+)y(\d+)/;
     const matches = coordinates.match(regex);
@@ -23,4 +35,4 @@ function getPlayers(message: string) {
     return null;
 }
 
-export { getCoordinates, getPlayers };
+export { getId, getCoordinates, getPlayers };

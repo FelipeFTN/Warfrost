@@ -1,7 +1,7 @@
 use simple_websockets::{Message, Responder};
 use std::collections::HashMap;
 
-use crate::network::utils::{get_coordinates, get_spawn, update_players};
+use crate::network::utils::{get_coordinates, get_spawn, update_players, send_all_clients};
 use crate::game::players::Players;
 
 // ws stands for web socket.
@@ -22,6 +22,7 @@ pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, R
                 responder.send(Message::Text(String::from("Hello from Server ;)")));
             }
         }
+        update_players(clients, players);
     }
 }
 
@@ -33,6 +34,10 @@ pub fn ws_disconnect(
     println!("A client with id #{} disconnected.", client_id);
     clients.remove(&client_id);
     players.remove_player(client_id);
+    send_all_clients(clients, 
+        format!("client::disconnected::#{}", client_id)
+    );
+    // update_players(clients, players);
 }
 
 pub fn ws_connect(
@@ -43,6 +48,9 @@ pub fn ws_connect(
 ) {
     println!("A client connected with id #{}.", client_id);
     clients.insert(client_id, responder);
+    clients.get(&client_id).unwrap().send(Message::Text(
+        format!("client::id::#{}", client_id)
+    ));
     if let Some((x, y)) = get_coordinates(get_spawn()) {
         players.add_player(x, y);
         update_players(clients, players);
