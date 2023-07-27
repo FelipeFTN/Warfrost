@@ -13,8 +13,6 @@ function movePlayer(message: string, WF: any) {
     let move: any;
     if (move = utils.getCoordinates(message)) {
         WF.players[move.id].setPosition(move.x, move.y);
-        // WF.players[move.id].x = move.x;
-        // WF.players[move.id].y = move.y;
     }
 }
 

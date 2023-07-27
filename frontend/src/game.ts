@@ -38,15 +38,17 @@ class Warfrost extends Phaser.Scene {
         this.add.image(0, -300, "map").setOrigin(0);
 
         // Player socket event listener
-        WF.playersHandler(this);
+        this.socket.on("players::update", this);
 
         // Cursor Listener
         WF.cursorHandler(this);
     }
 
-    // Obs:
-    // this.players = {id: { Phaser Sprite Object}, id: {...}}
-    // this.playerData = [{id: 0, x: 10, y: 10}, {...}]
+    // -----------------------------------------------------
+    // PLAYERS DATA TYPES:
+    // players    = {id: { Phaser Sprite Object}, id: {...}}
+    // playerData = [{id: 0, x: 10, y: 10}, {...}]
+    // -----------------------------------------------------
 
     update() {
         // Set clientID
@@ -56,15 +58,16 @@ class Warfrost extends Phaser.Scene {
         this.socket.on("client::disconnect", this);
 
         // Player socket event listener
-        WF.playersHandler(this);
+        this.socket.on("players::update", this);
 
         this.playersData.forEach((player: any) => {
-            if (player.id === this.clientId) { return; }
+            // If player does exists, update its position
             if (this.players[player.id]) { 
                 this.players[player.id].setPosition(player.x, player.y);
                 return;
             }
-
+            
+            // ... If not, then, create it
             this.players[player.id] = this.add.sprite(player.x, player.y, "player");
             this.players[player.id].setInteractive();
             this.players[player.id].setDepth(1);
@@ -77,6 +80,7 @@ class Warfrost extends Phaser.Scene {
 
         let playersIds = this.playersData.map((item: any) => item.id);
 
+        // Check every players saved into front-end
         for (const id in this.players) {
             // Checks if some player disconnected and destroy it
             if (!playersIds.includes(Number(id))) {
@@ -84,11 +88,8 @@ class Warfrost extends Phaser.Scene {
                 delete this.players[id];
             }
         }
-
-        // TODO: player movement
+        // Server movement listener
         this.socket.on("player::move", this);
-        // this.player.setPosition(this.player.x, this.player.y);
-        // this.socket.on("move", this.player);
     }
 }
 
