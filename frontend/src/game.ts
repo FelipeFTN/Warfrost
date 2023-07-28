@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser';
 
+import Selection from './warfrost/selection';
 import * as WF from './warfrost/handlers';
-import Socket from './network/websocket'
+import Socket from './network/websocket';
 
 class Warfrost extends Phaser.Scene {
     private clientId: number;
@@ -9,6 +10,8 @@ class Warfrost extends Phaser.Scene {
     private playersData: any;
 
     private players: any;
+
+    private selection: any;
 
     private selected: any;
 
@@ -42,6 +45,9 @@ class Warfrost extends Phaser.Scene {
 
         // Cursor Listener
         WF.cursorHandler(this);
+
+        // Set up selection
+        this.selection = new Selection(this);
     }
 
     // -----------------------------------------------------
@@ -51,6 +57,11 @@ class Warfrost extends Phaser.Scene {
     // -----------------------------------------------------
 
     update() {
+        // Mouse events listener
+        this.input.on('pointerdown', this.onPointerDown, this);
+        this.input.on('pointerup', this.onPointerUp, this);
+        this.input.on('pointermove', this.onPointerMove, this);
+
         // Set clientID
         this.socket.on("client::id", this);
 
@@ -62,11 +73,11 @@ class Warfrost extends Phaser.Scene {
 
         this.playersData.forEach((player: any) => {
             // If player does exists, update its position
-            if (this.players[player.id]) { 
+            if (this.players[player.id]) {
                 this.players[player.id].setPosition(player.x, player.y);
                 return;
             }
-            
+
             // ... If not, then, create it
             this.players[player.id] = this.add.sprite(player.x, player.y, "player");
             this.players[player.id].setInteractive();
@@ -90,6 +101,18 @@ class Warfrost extends Phaser.Scene {
         }
         // Server movement listener
         this.socket.on("player::move", this);
+    }
+
+    onPointerDown(pointer: Phaser.Input.Pointer): void {
+        this.selection.startSelection(pointer.x, pointer.y);
+    }
+
+    onPointerUp(pointer: Phaser.Input.Pointer): void {
+        this.selection.endSelection();
+    }
+
+    onPointerMove(pointer: Phaser.Input.Pointer): void {
+        this.selection.updateSelection(pointer.x, pointer.y);
     }
 }
 
