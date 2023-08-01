@@ -5,21 +5,20 @@ on:
     branches: [ "master", "next" ]
 
 jobs:
-
   warfrost-docker:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Create Network
       run: docker network create --subnet=172.20.0.0/16 warfrost-network
 
     - name: Build the Warfrost back-end image
-      run: docker buildx build -t warfrost-backend ./docker/backend/
+      run: docker build --build-context warfrost=backend -t warfrost-backend ./docker/backend/
 
     - name: Build the Warfrost front-end image
-      run: docker buildx build -t warfrost-frontend ./docker/frontend/
+      run: docker build --build-context warfrost=frontend -t warfrost-frontend ./docker/frontend/
 
     - name: Run docker back-end image
       run: docker run -itd -p 8080:8080 --net warfrost-network --ip 172.20.0.2 --name container-warfrost-backend warfrost-backend
