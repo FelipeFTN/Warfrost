@@ -1,12 +1,3 @@
-# Build and Run the Docker Image
-#
-# $ docker build -t warfrost-frontend .
-# OR:
-# $ docker buildx build -t warfrost-frontend .
-# THEN:
-# $ docker run -it -d -p 80:80 --name container-warfrost-frontend warfrost-frontend
-#
-
 # Node official image
 FROM node:20-alpine as build-stage
 
@@ -14,12 +5,12 @@ FROM node:20-alpine as build-stage
 WORKDIR /app
 
 # Install Dependencies
-COPY package*.json ./
+COPY --from=warfrost package*.json ./
 
 RUN npm install
 
 # Copy all files
-COPY . .
+COPY --from=warfrost . .
 
 # Set Environment Variables
 ENV PORT=8080
@@ -32,10 +23,10 @@ RUN npm run build
 FROM nginx:stable-alpine as production-stage
 
 # Copy the build output to replace the default nginx contents
-COPY --from=build-stage /app/dist /usr/share/nginx/html
+COPY --from=build-stage ./app/dist /usr/share/nginx/html
 
 # Copy the nginx configuration file
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=warfrost nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80

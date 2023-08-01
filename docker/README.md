@@ -1,6 +1,7 @@
 # Docker
 
 This folder contains the necessary scripts to build and run the Warfrost game using Docker containers. The scripts provided here simplify the process of containerizing the frontend and backend components of the game.
+You can start warfrost and both backend and frontend by running `sh docker/warfrost-init.sh` at the root.
 
 ## Frontend
 

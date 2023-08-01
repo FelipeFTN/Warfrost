@@ -1,11 +1,11 @@
 # Start Networks
-sh network-init.sh
+sh docker/network-init.sh
 
 # Start Back-end
-sh backend-init.sh
+sh docker/backend/backend-init.sh
 
 # Start Front-end
-sh frontend-init.sh
+sh docker/frontend/frontend-init.sh
 
 # Logs
 docker ps

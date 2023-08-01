@@ -1,6 +1,6 @@
 # Stop all containers
-sh backend-stop.sh
-sh frontend-stop.sh
+sh docker/backend/backend-stop.sh
+sh docker/frontend/frontend-stop.sh
 
 # Remove network
 docker network rm warfrost-network
