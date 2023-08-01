@@ -16,10 +16,10 @@ jobs:
       run: docker network create --subnet=172.20.0.0/16 warfrost-network
 
     - name: Build the Warfrost back-end image
-      run: docker buildx build -t warfrost-backend ./backend/
+      run: docker buildx build -t warfrost-backend ./docker/backend/
 
     - name: Build the Warfrost front-end image
-      run: docker buildx build -t warfrost-frontend ./frontend/
+      run: docker buildx build -t warfrost-frontend ./docker/frontend/
 
     - name: Run docker back-end image
       run: docker run -itd -p 8080:8080 --net warfrost-network --ip 172.20.0.2 --name container-warfrost-backend warfrost-backend
