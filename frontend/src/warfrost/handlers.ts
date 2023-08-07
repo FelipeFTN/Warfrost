@@ -1,3 +1,5 @@
+import * as Phaser from 'phaser';
+
 function cursorHandler(WF: any) {
     WF.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
         if (pointer.rightButtonDown()) {
