@@ -1,0 +1,44 @@
+version: '3'
+services:
+  warfrost-webserver:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ../frontend/dist:/usr/share/nginx/html/
+      - ../frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - warfrost-frontend
+    networks:
+      - warfrost-network
+
+  warfrost-frontend:
+    image: node:20-alpine
+    volumes:
+      - ../frontend:/app
+    working_dir: /app
+    command: sh -c "npm install && npm run build"
+    environment:
+      - PORT=8080
+      - HOST=172.30.0.2
+    networks:
+      - warfrost-network
+
+  warfrost-backend:
+    image: rust:1.67-slim
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../backend:/app
+    working_dir: /app
+    command: sh -c "cargo run --release"
+    networks:
+      - warfrost-network
+
+networks:
+  warfrost-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16
