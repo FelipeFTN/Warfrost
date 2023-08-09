@@ -1,70 +1,24 @@
 use simple_websockets::{Message, Responder};
-use std::collections::HashMap;
 
-use crate::network::utils::{get_id, get_coordinates, get_spawn, update_players, send_all_clients};
+use crate::network::utils::{get_id, get_coordinates};
 use crate::game::players::Players;
 
-// ws stands for web socket.
-pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, Responder>, players: &mut Players) {
-    if let Message::Text(text) = &message {
-        println!("Received a message from client #{}: {}", client_id, text);
-        let responder = clients.get(&client_id).unwrap();
 
-        match text {
-            text if text.contains("player::select") => {
-                if let Some( id ) = get_id(text.to_string()) {
-                    players.set_selected(id, true);
-                } else {
-                    responder.send(Message::Text(format!("Error: {:?}", text)));
-                }
-            }
-            text if text.contains("mouse::right::click") => {
-                if let Some((x, y)) = get_coordinates(text.to_string()) {
-                    if let Some( id ) = players.get_selected() {
-                        players.update_player(id, x, y);
-                        responder.send(Message::Text(format!("player::move::#{}::x{}y{}", id, x, y)));
-                    }
-                } else {
-                    responder.send(Message::Text(format!("Error: {:?}", text)));
-                }
-            }
-            _ => {
-                responder.send(Message::Text(String::from("Hello from Server ;)")));
-            }
-        }
-        update_players(clients, players);
+pub fn player_select(players: &mut Players, text: &String, responder: &Responder) {
+    if let Some( id ) = get_id(text.to_string()) {
+        players.set_selected(id, true);
+    } else {
+        responder.send(Message::Text(format!("Error: {:?}", text)));
     }
 }
 
-pub fn ws_disconnect(
-    client_id: u64,
-    clients: &mut HashMap<u64, Responder>,
-    players: &mut Players,
-) {
-    println!("A client with id #{} disconnected.", client_id);
-    clients.remove(&client_id);
-    players.remove_player(client_id);
-    send_all_clients(clients, 
-        format!("client::disconnected::#{}", client_id)
-    );
-    // update_players(clients, players);
-}
-
-pub fn ws_connect(
-    client_id: u64,
-    clients: &mut HashMap<u64, Responder>,
-    players: &mut Players,
-    responder: Responder,
-) {
-    println!("A client connected with id #{}.", client_id);
-    clients.insert(client_id, responder);
-    clients.get(&client_id).unwrap().send(Message::Text(
-        format!("client::id::#{}", client_id)
-    ));
-    if let Some((x, y)) = get_coordinates(get_spawn()) {
-        players.add_player(x, y);
-        update_players(clients, players);
+pub fn mouse_click(players: &mut Players, text: &String, responder: &Responder) {
+    if let Some((x, y)) = get_coordinates(text.to_string()) {
+        if let Some( id ) = players.get_selected() {
+            players.update_player(id, x, y);
+            responder.send(Message::Text(format!("player::move::#{}::x{}y{}", id, x, y)));
+        }
     } else {
-        panic!("error: get_coordinates");
+        responder.send(Message::Text(format!("Error: {:?}", text)));
     }
 }

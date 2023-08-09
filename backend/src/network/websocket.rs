@@ -1,7 +1,7 @@
 use simple_websockets::{Event, Responder};
 use std::collections::HashMap;
 
-use crate::game::network::{ws_connect, ws_disconnect, ws_message};
+use crate::network::handlers::{ws_connect, ws_disconnect, ws_message};
 use crate::game::players::Players;
 
 pub fn network(players: &mut Players) {
