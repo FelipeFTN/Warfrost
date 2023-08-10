@@ -1,0 +1,14 @@
+# Use nginx:alpine as the base image
+FROM nginx:alpine
+
+# Copy the built application to nginx's html directory
+COPY --from=frontend-node /app/build /usr/share/nginx/html
+
+# Copy the nginx configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]

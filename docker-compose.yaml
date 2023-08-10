@@ -1,0 +1,24 @@
+version: '3'
+services:
+  frontend-node:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/frontend/Dockerfile-node
+    environment:
+      - PORT=8080
+      - HOST=172.30.0.2
+
+  frontend-nginx:
+    build:
+      context: ./frontend
+      dockerfile: ../docker/frontend/Dockerfile-nginx
+    ports:
+      - 80:80
+
+networks:
+  warfrost-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16

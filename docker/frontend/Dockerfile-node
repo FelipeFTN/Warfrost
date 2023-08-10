@@ -1,0 +1,14 @@
+# Use node:20-alpine as the base image
+FROM node:20-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the application files
+COPY . .
+
+# Install the dependencies
+RUN npm install
+
+# Build the application
+RUN npm run build
