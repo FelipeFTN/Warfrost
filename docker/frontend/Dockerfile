@@ -1,29 +1,34 @@
-# Use node:20-alpine as the base image
-FROM node:20-alpine AS build-stage
+# Node official image
+FROM node:20-alpine as build-stage
 
-# Set the working directory
+# Set up Working directory
 WORKDIR /app
 
-# Copy the application files
-COPY ./ .
+# Install Dependencies
+COPY --from=warfrost package*.json ./
 
-# Install the dependencies
 RUN npm install
 
-# Build the application
+# Copy all files
+COPY --from=warfrost . .
+
+# Set Environment Variables
+ENV PORT=8080
+ENV HOST=172.20.0.2
+
+# Build Phaser game
 RUN npm run build
 
-# Use nginx:alpine as the base image
-FROM nginx:stable-alpine
+# Nginx stage
+FROM nginx:stable-alpine as production-stage
 
-# Copy the built application to nginx's html directory
-COPY --from=build-stage /app/build /usr/share/nginx/html
+# Copy the build output to replace the default nginx contents
+COPY --from=build-stage ./app/dist /usr/share/nginx/html
 
 # Copy the nginx configuration file
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=warfrost nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80
 EXPOSE 80
 
-# Start nginx
 CMD ["nginx", "-g", "daemon off;"]
