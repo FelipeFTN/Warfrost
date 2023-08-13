@@ -74,7 +74,9 @@ class Warfrost extends Phaser.Scene {
         this.playersData.forEach((player: any) => {
             // If player does exists, update its position
             if (this.players[player.id]) {
+                // Update position & Check for selection
                 this.players[player.id].setPosition(player.x, player.y);
+                this.selection.handleSelection(this, this.players[player.id]);
                 return;
             }
 
@@ -82,6 +84,7 @@ class Warfrost extends Phaser.Scene {
             this.players[player.id] = this.add.sprite(player.x, player.y, "player");
             this.players[player.id].setInteractive();
             this.players[player.id].setDepth(1);
+            this.players[player.id].setData('id', player.id); // Assign an identifier
 
             // Checks for any player interation
             this.players[player.id].on("pointerdown", (pointer: Phaser.Input.Pointer) => (
@@ -104,6 +107,7 @@ class Warfrost extends Phaser.Scene {
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer): void {
+        if (pointer.rightButtonDown()) { return; }
         this.selection.startSelection(pointer.x, pointer.y);
     }
 
