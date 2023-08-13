@@ -84,7 +84,8 @@ class Warfrost extends Phaser.Scene {
             this.players[player.id] = this.add.sprite(player.x, player.y, "player");
             this.players[player.id].setInteractive();
             this.players[player.id].setDepth(1);
-            this.players[player.id].setData('id', player.id); // Assign an identifier
+            this.players[player.id].setData('id', player.id);
+            this.players[player.id].setData('selected', false);
 
             // Checks for any player interation
             this.players[player.id].on("pointerdown", (pointer: Phaser.Input.Pointer) => (

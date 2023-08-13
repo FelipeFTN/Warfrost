@@ -1,8 +1,25 @@
 use rand::{thread_rng, Rng};
 use simple_websockets::{Message, Responder};
 use std::collections::HashMap;
+use regex::Regex;
 
-use crate::game::players::Players;
+use crate::game::players::{Players, Player};
+
+pub fn get_players(text: String) -> Option<Vec<Player>> {
+    let regex = Regex::new(r"players::update::(\[[^\]]+\])").unwrap();
+    if let Some(captures) = regex.captures(&text) {
+        let players_str = captures.get(1).unwrap().as_str();
+        match serde_json::from_str(players_str) {
+            Ok(players_json) => {
+                let players: Vec<Player> = players_json;
+                Some(players)
+            },
+            Err(_) => None,
+        }
+    } else {
+        None
+    }
+}
 
 pub fn get_id(text: String) -> Option<u64> {
     let regex = regex::Regex::new(r"#(\d+)").unwrap();

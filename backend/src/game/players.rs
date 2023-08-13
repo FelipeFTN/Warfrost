@@ -65,6 +65,15 @@ impl Players {
         self.players_map.values().collect()
     }
 
+    pub fn set_players(&mut self, players: Vec<Player>) {
+        for player in players {
+            if let Some(old_player) = self.players_map.get_mut(&player.id) {
+                old_player.x = player.x;
+                old_player.y = player.y;
+            } else { self.players_map.insert(player.id, player); }
+        }
+    }
+
     pub fn set_selected(&mut self, id: u64, selected: bool) {
         if let Some(player) = self.players_map.get_mut(&id) {
             player.selected = selected;

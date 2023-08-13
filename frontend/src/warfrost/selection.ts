@@ -40,19 +40,19 @@ export class Selection {
     handleSelection(WF: any, player: Phaser.GameObjects.Sprite): void {
         if (!this.isSelecting) { return; }
         const playerId = player.getData('id');
+        const isSelected = player.getData('selected');
+        // Check for spriting collision with selection zone
         if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), this.selectionRect)) {
-            // The player sprite is colliding with the selection zone
-            // Do something with the player sprite here (e.g., add it to the selected units)
-            // For example: player.setTint(0xff0000); // Tint the player sprite red
+            if (isSelected) { return; }
             player.setTint(0x00ff00);
             WF.selected = `player::select::#${playerId}`;
+            player.setData('selected', true);
             WF.socket.send(WF.selected);
         } else {
-            // The player sprite is not colliding with the selection zone
-            // Do something else here (e.g., remove it from the selected units if it was previously selected)
-            // For example: player.clearTint(); // Remove any tint applied previously
+            if (!isSelected) { return; }
             player.clearTint();
             WF.selected = `player::unselect::#${playerId}`;
+            player.setData('selected', false);
             WF.socket.send(WF.selected);
         }
     }

@@ -4,7 +4,6 @@ function getId(message: string) {
 
     if (matches && matches.length === 2) {
         const id = parseInt(matches[1]);
-
         return id;
     }
     return null;
@@ -35,4 +34,13 @@ function getPlayers(message: string) {
     return null;
 }
 
-export { getId, getCoordinates, getPlayers };
+function formatObjectsArray(array: any, objectKeys: any) {
+  const objects = array.map((item: any) => {
+    const properties = objectKeys.map((key: any) => `\"${key}\": ${item[key]}`).join(', ');
+    return `{${properties}}`;
+  });
+
+  return `[${objects.join(', ')}]`;
+}
+
+export { formatObjectsArray, getId, getCoordinates, getPlayers };
