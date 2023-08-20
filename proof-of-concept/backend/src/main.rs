@@ -1,19 +1,8 @@
 mod network;
-mod pathfind;
+
+use network::network;
 
 fn main() {
-    // network();
-    find_path();
+    // Starts Websocket at 8080
+    network();
 }
-
-fn find_path() {
-    pathfind::find();
-}
-
-// fn network() {
-//     let n = match network::start_network() {
-//         Ok(n) => println!("Ready to Work! {:?}", n),
-//         Err(e) => println!("Work Work {:?}", e)
-//     };
-//     println!("We got the n: {:?}", n);
-// }

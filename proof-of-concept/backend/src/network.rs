@@ -1,43 +1,25 @@
-use std::str;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tokio::net::TcpListener;
+use simple_websockets::{Event, Responder, Message};
+use std::collections::HashMap;
 
-#[tokio::main]
-pub async fn start_network() -> Result<(), Box<dyn std::error::Error>> {
-    let listener = TcpListener::bind("127.0.0.1:8080").await?;
+pub fn network() {
+    let event_hub = simple_websockets::launch(8080).expect("failed to listen on port 8080.");
+
+    let mut clients: HashMap<u64, Responder> = HashMap::new();
 
     loop {
-        let (mut socket, _) = listener.accept().await?;
-
-        tokio::spawn(async move {
-            let mut buf = [0; 1024];
-
-            // In a loop, read data from the socket and write the data back.
-            loop {
-                let n = match socket.read(&mut buf).await {
-                    // socket closed
-                    Ok(n) if n == 0 => return,
-                    Ok(n) => n,
-                    Err(e) => {
-                        eprintln!("failed to read from socket; err = {:?}", e);
-                        return;
-                    }
-                };
-
-                let s = match str::from_utf8(&buf) {
-                    Ok(v) => v,
-                    Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
-                };
-
-                println!("result: {}", s);
-                println!("buffer: {:?}", &buf[0..n]);
-
-                // Write the data back
-                if let Err(e) = socket.write_all(s.as_bytes()).await {
-                    eprintln!("failed to write to socket; err = {:?}", e);
-                    return;
-                }
+        match event_hub.poll_event() {
+            Event::Connect(client_id, responder) => {
+                clients.insert(client_id, responder.clone());
+                responder.send(Message::Text(format!("Hello, {:?}", client_id)));
             }
-        });
+            Event::Disconnect(client_id) => {
+                let client = clients.get(&client_id).unwrap();
+                client.send(Message::Text(format!("Bye, {:?}", client_id)));
+            }
+            Event::Message(client_id, message) => {
+                let client = clients.get(&client_id).unwrap();
+                client.send(Message::Text(format!("{:?} - {:?}", message, client_id)));
+            }
+        }
     }
 }
