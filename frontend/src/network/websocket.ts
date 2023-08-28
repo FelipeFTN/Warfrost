@@ -9,7 +9,10 @@ class Socket {
 
     private message: string;
 
+    private messageQueue: Array<string>;
+
     constructor(host: string, port: string) {
+        this.messageQueue = [];
         this.message = "";
         this.host = host;
         this.port = port;
@@ -26,6 +29,7 @@ class Socket {
         // Handle WebSocket message received event
         this.socket.onmessage = (event: any) => {
             this.message = event.data;
+            this.messageQueue.push(this.message);
             console.log(event.data);
         };
 
@@ -35,19 +39,30 @@ class Socket {
         };
     }
 
-    async on(event: string, WF: any) { // this code is terrible, please improve
+    // Trying to unfuck message system.
+    // A message queue is necessary for the front-end do not skip
+    // any message comming from the server; since server process
+    // data a lot faster than client.
+    // Bugs still may happen here... must test it better.
+    async on(event: string, WF: any) {
+        const firstMessage = this.messageQueue[0] ?? "";
+        if (!firstMessage.includes(event)) return false;
         switch (event) {
             case "client::id":
-                events.getId(this.message, WF);
+                events.getId(firstMessage, WF);
+                this.messageQueue.shift();
                 break;
             case "players::update":
-                events.updatePlayers(this.message, WF);
+                events.updatePlayers(firstMessage, WF);
+                this.messageQueue.shift();
                 break;
             case "client::disconnect":
-                events.removePlayer(this.message, WF);
+                events.removePlayer(firstMessage, WF);
+                this.messageQueue.shift();
                 break;
             case "player::move":
-                events.movePlayer(this.message, WF);
+                events.movePlayer(firstMessage, WF);
+                this.messageQueue.shift();
                 break;
             default:
                 return false;
