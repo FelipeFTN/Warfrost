@@ -1,19 +1,23 @@
 import * as Phaser from 'phaser';
 
 import Selection from './warfrost/selection';
+import Pathfind from './warfrost/pathfind';
 import * as WF from './warfrost/handlers';
 import Socket from './network/websocket';
 
 class Warfrost extends Phaser.Scene {
-    private clientId: number;
+
+    private pathfind: Pathfind;
 
     private playersData: any;
 
-    private players: any;
+    private clientId: number;
 
     private selection: any;
 
     private selected: any;
+
+    private players: any;
 
     private socket: Socket;
 
@@ -46,6 +50,9 @@ class Warfrost extends Phaser.Scene {
         // Cursor Listener
         WF.cursorHandler(this);
 
+        // Pathfind
+        this.pathfind = new Pathfind(this);
+
         // Set up selection
         this.selection = new Selection(this);
     }
@@ -59,8 +66,11 @@ class Warfrost extends Phaser.Scene {
     update() {
         // Mouse events listener
         this.input.on('pointerdown', this.onPointerDown, this);
-        this.input.on('pointerup', this.onPointerUp, this);
         this.input.on('pointermove', this.onPointerMove, this);
+        this.input.on('pointerup', this.onPointerUp, this);
+
+        // Pathfind
+        this.pathfind.draw();
 
         // Set clientID
         this.socket.on("client::id", this);
@@ -70,6 +80,8 @@ class Warfrost extends Phaser.Scene {
 
         // Player socket event listener
         this.socket.on("players::update", this);
+
+        // Pathfind
 
         this.playersData.forEach((player: any) => {
             // If player does exists, update its position
@@ -130,3 +142,5 @@ const config: Phaser.Types.Core.GameConfig = {
 };
 
 const game = new Phaser.Game(config);
+
+export default Warfrost;
