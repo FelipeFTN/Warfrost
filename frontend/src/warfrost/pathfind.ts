@@ -1,14 +1,15 @@
 import * as Phaser from 'phaser';
+import Warfrost from '../game';
 
 class Pathfind {
     private graphics: Phaser.GameObjects.Graphics;
     private gridSize: number;
     private rows: number;
     private cols: number;
-    private scene: Phaser.Scene;
+    private scene: Warfrost;
     private grid: Phaser.Geom.Rectangle[];
 
-    constructor(scene: Phaser.Scene) {
+    constructor(scene: Warfrost) {
         this.scene = scene;
         this.graphics = this.scene.add.graphics();
         this.gridSize = 32;
@@ -25,10 +26,14 @@ class Pathfind {
                 this.grid.push(rect);
             }
         }
-
         // Set up input handlers
+        // Probably this will cause the worst performance ever seen
         this.scene.input.on('pointermove', this.onPointerMove, this);
         this.scene.input.on('pointerdown', this.onPointerDown, this);
+
+        // Send pathfind grid to back-end
+        const message = `pathfind::grid::${JSON.stringify(this.grid)}`;
+        this.scene.socket.send(message.replace(/\"type\":5,/g, ""));
     }
 
     private onPointerMove(pointer: Phaser.Input.Pointer) {
@@ -40,7 +45,9 @@ class Pathfind {
             this.graphics.clear();
             
             // Highlight the cell in green
-            this.graphics.lineStyle(1, 0x00ff00); // Green color
+            this.graphics.fillStyle(0x008800); // Green color
+            this.graphics.lineStyle(1, 0x008800); // Green color
+            this.graphics.fillRectShape(cell);
             this.graphics.strokeRectShape(cell);
         }
     }

@@ -19,7 +19,7 @@ class Warfrost extends Phaser.Scene {
 
     private players: any;
 
-    private socket: Socket;
+    public socket: Socket;
 
     constructor() {
         super("Warfrost");

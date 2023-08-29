@@ -36,3 +36,7 @@ pub fn mouse_click(players: &mut Players, text: &String, responder: &Responder) 
         responder.send(Message::Text(format!("Error: {:?}", text)));
     }
 }
+
+pub fn pathfind(players: &mut Players, text: &String, responder: &Responder) {
+
+} 

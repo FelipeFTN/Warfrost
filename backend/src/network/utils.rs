@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use regex::Regex;
 
 use crate::game::players::{Players, Player};
+use crate::game::pathfind::Grid;
 
 pub fn get_players(text: String) -> Option<Vec<Player>> {
     let regex = Regex::new(r"players::update::(\[[^\]]+\])").unwrap();
@@ -68,5 +69,21 @@ pub fn send_all_clients(clients: &mut HashMap<u64, Responder>, message: String) 
     // Iterate over the clients in the HashMap using a for loop.
     for (_, responder) in clients {
         responder.send(Message::Text(message.clone()));
+    }
+}
+
+pub fn get_pathfind_grid(text: String) -> Option<Vec<Grid>> {
+    let regex = Regex::new(r"pathfind::grid::(\[[^\]]+\])").unwrap();
+    if let Some(captures) = regex.captures(&text) {
+        let pathfind_str = captures.get(1).unwrap().as_str();
+        match serde_json::from_str(pathfind_str) {
+            Ok(pathfind_json) => {
+                let grid: Vec<Grid> = pathfind_json;
+                Some(grid)
+            },
+            Err(_) => None,
+        }
+    } else {
+        None
     }
 }
