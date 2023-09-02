@@ -40,6 +40,11 @@ pub fn mouse_click(players: &mut Players, text: &String, responder: &Responder) 
 
 pub fn pathfind(_players: &mut Players, grids: &mut Grids, text: &String, responder: &Responder) {
     if let Some( game_grids ) = get_pathfind_grid(text.to_string()) {
+        let mut id: u64 = 0;
+        for mut grid in game_grids.clone() {
+            grid.set_id(id);
+            id += 1;
+        }
         grids.add_grids(game_grids);
     } else {
         responder.send(Message::Text(format!("Error: {:?}", text)));

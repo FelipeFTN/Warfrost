@@ -4,10 +4,18 @@ use std::collections::HashMap;
 #[derive(Debug, Clone)]
 #[derive(Serialize, Deserialize)]
 pub struct Grid {
+    #[serde(skip)]
+    id: u64,
     x: i16,
     y: i16,
     width: i16,
     height: i16,
+}
+
+impl Grid {
+    pub fn set_id(&mut self, id: u64) {
+        self.id = id;
+    }
 }
 
 #[derive(Debug)]
@@ -30,7 +38,7 @@ impl Grids {
 
     pub fn add_grids(&mut self, grids: Vec<Grid>) {
         for grid in grids {
-            self.grid_map.insert((grid.x/grid.width) as u64, grid);
+            self.grid_map.insert(grid.id, grid);
         }
     }
 }
