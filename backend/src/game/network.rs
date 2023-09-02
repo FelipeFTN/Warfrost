@@ -1,7 +1,8 @@
 use simple_websockets::{Message, Responder};
 
-use crate::network::utils::{get_players, get_id, get_coordinates};
+use crate::network::utils::{*};
 use crate::game::players::Players;
+use crate::pathfind::models::Grids;
 
 pub fn players_update(players: &mut Players, text: &String, responder: &Responder) {
     if let Some( new_players ) = get_players(text.to_string()) {
@@ -37,6 +38,10 @@ pub fn mouse_click(players: &mut Players, text: &String, responder: &Responder) 
     }
 }
 
-pub fn pathfind(players: &mut Players, text: &String, responder: &Responder) {
-
-} 
+pub fn pathfind(_players: &mut Players, grids: &mut Grids, text: &String, responder: &Responder) {
+    if let Some( game_grids ) = get_pathfind_grid(text.to_string()) {
+        grids.add_grids(game_grids);
+    } else {
+        responder.send(Message::Text(format!("Error: {:?}", text)));
+    }
+}

@@ -1,12 +1,13 @@
 use simple_websockets::{Message, Responder};
 use std::collections::HashMap;
 
-use crate::network::utils::{get_coordinates, get_spawn, update_players, send_all_clients};
-use crate::game::network::{players_update, player_select, player_unselect, mouse_click, pathfind};
+use crate::game::network::{*};
+use crate::network::utils::{*};
 use crate::game::players::Players;
+use crate::pathfind::models::Grids;
 
 // ws stands for web socket.
-pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, Responder>, players: &mut Players) {
+pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, Responder>, players: &mut Players, grids: &mut Grids) {
     if let Message::Text(text) = &message {
         println!("Received a message from client #{}: {}", client_id, text);
         let responder = clients.get(&client_id).unwrap();
@@ -25,7 +26,7 @@ pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, R
                 mouse_click(players, text, responder);
             }
             text if text.contains("pathfind::grid") => {
-                pathfind(players, text, responder);
+                pathfind(players, grids, text, responder);
             }
             _ => {
                 responder.send(Message::Text(String::from("Hello from Server")));

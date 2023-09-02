@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use regex::Regex;
 
 use crate::game::players::{Players, Player};
-use crate::game::pathfind::Grid;
+use crate::pathfind::models::Grid;
 
 pub fn get_players(text: String) -> Option<Vec<Player>> {
     let regex = Regex::new(r"players::update::(\[[^\]]+\])").unwrap();
