@@ -11,7 +11,7 @@ pub struct Player {
 }
 
 impl Player {
-    fn new(x: i16, y:i16) -> Self {
+    fn new(x: i16, y: i16) -> Self {
         static mut NEXT_ID: u64 = 0;
         let selected = false;
 
