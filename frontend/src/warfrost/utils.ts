@@ -34,13 +34,13 @@ function getPlayers(message: string) {
     return null;
 }
 
-function formatObjectsArray(array: any, objectKeys: any) {
-  const objects = array.map((item: any) => {
-    const properties = objectKeys.map((key: any) => `\"${key}\": ${item[key]}`).join(', ');
-    return `{${properties}}`;
-  });
+function formatObjectsArray(array: Array<object>, objectKeys: Array<string>) {
+    const objects = array.map((item: object) => {
+        const properties = objectKeys.map((key: string) => `"${key}": ${item[key]}`).join(', ');
+        return `{${properties}}`;
+    });
 
-  return `[${objects.join(', ')}]`;
+    return `[${objects.join(', ')}]`;
 }
 
 export { formatObjectsArray, getId, getCoordinates, getPlayers };

@@ -33,7 +33,7 @@ class Pathfind {
 
         // Send pathfind grid to back-end
         const message = `pathfind::grid::${JSON.stringify(this.grid)}`;
-        this.scene.socket.send(message.replace(/\"type\":5,/g, ""));
+        this.scene.socket.send(message.replace(/"type":5,/g, ""));
     }
 
     private onPointerMove(pointer: Phaser.Input.Pointer) {
@@ -59,7 +59,7 @@ class Pathfind {
         if (cell) {
             // You can perform actions when a cell is clicked.
             // For example, you can emit an event or update a data structure.
-            console.log('Clicked on cell:', cell);
+            // console.log('Clicked on cell:', cell);
         }
     }
 

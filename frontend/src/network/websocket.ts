@@ -1,5 +1,7 @@
 import * as events from "./events";
 
+import Warfrost from '../game';
+
 class Socket {
     private socket: WebSocket;
 
@@ -27,8 +29,12 @@ class Socket {
         };
 
         // Handle WebSocket message received event
-        this.socket.onmessage = (event: any) => {
+        this.socket.onmessage = (event: MessageEvent) => {
             this.message = event.data;
+            if (this.message.includes("Error")) {
+                console.error(this.message);
+                return;
+            }
             this.messageQueue.push(this.message);
             console.log(event.data);
         };
@@ -44,7 +50,7 @@ class Socket {
     // any message comming from the server; since server process
     // data a lot faster than client.
     // Bugs still may happen here... must test it better.
-    async on(event: string, WF: any) {
+    async on(event: string, WF: Warfrost) {
         const firstMessage = this.messageQueue[0] ?? "";
         if (!firstMessage.includes(event)) return false;
         switch (event) {

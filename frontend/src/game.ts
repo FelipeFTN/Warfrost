@@ -1,23 +1,24 @@
 import * as Phaser from 'phaser';
 
 import Selection from './warfrost/selection';
+import * as Models from './warfrost/models';
 import Pathfind from './warfrost/pathfind';
 import * as WF from './warfrost/handlers';
 import Socket from './network/websocket';
 
 class Warfrost extends Phaser.Scene {
 
-    private pathfind: Pathfind;
+    public pathfind: Pathfind;
 
-    private playersData: any;
+    public playersData: Array<Models.PlayerData>;
 
-    private clientId: number;
+    public clientId: number;
 
-    private selection: any;
+    public selection: Selection;
 
-    private selected: any;
+    public selected: string;
 
-    private players: any;
+    public players: object;
 
     public socket: Socket;
 
@@ -83,7 +84,7 @@ class Warfrost extends Phaser.Scene {
 
         // Pathfind
 
-        this.playersData.forEach((player: any) => {
+        this.playersData.forEach((player: Models.PlayerData) => {
             // If player does exists, update its position
             if (this.players[player.id]) {
                 // Update position & Check for selection
@@ -105,7 +106,7 @@ class Warfrost extends Phaser.Scene {
             ));
         });
 
-        let playersIds = this.playersData.map((item: any) => item.id);
+        const playersIds = this.playersData.map((item: Models.PlayerData) => item.id);
 
         // Check every players saved into front-end
         for (const id in this.players) {
@@ -120,11 +121,11 @@ class Warfrost extends Phaser.Scene {
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer): void {
-        if (pointer.rightButtonDown()) { return; }
+        if (pointer.rightButtonDown()) return;
         this.selection.startSelection(pointer.x, pointer.y);
     }
 
-    onPointerUp(pointer: Phaser.Input.Pointer): void {
+    onPointerUp(_pointer: Phaser.Input.Pointer): void {
         this.selection.endSelection();
     }
 

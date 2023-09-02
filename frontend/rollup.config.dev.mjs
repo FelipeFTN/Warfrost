@@ -22,7 +22,7 @@ export default {
         format: 'iife',
         sourcemap: true,
         globals: {
-          net: 'net'
+            net: 'net'
         }
     },
 
@@ -44,7 +44,7 @@ export default {
 
         //  Parse our .ts source files
         nodeResolve({
-            extensions: [ '.ts', '.tsx' ]
+            extensions: ['.ts', '.tsx']
         }),
 
         //  We need to convert the Phaser 3 CJS modules into a format Rollup can use:
@@ -53,7 +53,7 @@ export default {
                 'node_modules/eventemitter3/**',
                 'node_modules/phaser/**'
             ],
-            exclude: [ 
+            exclude: [
                 'node_modules/phaser/src/polyfills/requestAnimationFrame.js',
                 'node_modules/phaser/src/phaser-esm.js'
             ],
@@ -61,7 +61,7 @@ export default {
             ignoreGlobal: true
         }),
 
-        nodePolyfills( /* options */ ),
+        nodePolyfills( /* options */),
 
         //  See https://github.com/rollup/plugins/tree/master/packages/typescript for config options
         typescript(),

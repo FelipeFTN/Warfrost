@@ -1,37 +1,38 @@
-import * as utils from "../warfrost/utils";
+import * as Models from '../warfrost/models';
+import * as utils from '../warfrost/utils';
+import Warfrost from '../game';
 
-function getId(message: string, WF: any) {
+function getId(message: string, WF: Warfrost) {
     if (!message.includes("client::id")) { return; }
     let id: number;
-    if (id = utils.getId(message)) {
+    if ((id = utils.getId(message))) {
         WF.clientId = id;
     }
 }
 
-function movePlayer(message: string, WF: any) {
+function movePlayer(message: string, WF: Warfrost) {
     if (!message.includes("player::move")) { return; }
-    let move: any;
-    if (move = utils.getCoordinates(message)) {
+    let move: {id: number, x: number, y: number};
+    if ((move = utils.getCoordinates(message))) {
         WF.players[move.id].setPosition(move.x, move.y);
     }
 }
 
-function updatePlayers(message: string, WF: any) {
+function updatePlayers(message: string, WF: Warfrost) {
     if (!message.includes("players::update")) { return; }
-    let players: any;
-    if (players = utils.getPlayers(message)) {
+    let players: Array<Models.PlayerData>;
+    if ((players = utils.getPlayers(message))) {
         WF.playersData = players;
     }
 }
 
-function removePlayer(message: string, WF: any) {
+function removePlayer(message: string, WF: Warfrost) {
     if (!message.includes("client::disconnected")) { return; }
-    let id: any;
-    if (id = utils.getId(message)) {
-        WF.playersData.map((player: any) => {
-            if (player.id !== id) { return; }
-            WF.playersData.splice(player, 1);
-            WF.socket.message = "player disconnected";
+    let id: number;
+    if ((id = utils.getId(message))) {
+        WF.playersData.map((player: Models.PlayerData) => {
+            if (player.id !== id) return;
+            WF.playersData.splice(id, 1);
         });
     }
 }

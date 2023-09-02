@@ -1,5 +1,7 @@
 import * as Phaser from 'phaser';
 
+import Warfrost from '../game';
+
 export class Selection {
     private graphics: Phaser.GameObjects.Graphics;
     private scene: Phaser.Scene;
@@ -22,34 +24,34 @@ export class Selection {
     }
 
     updateSelection(x: number, y: number): void {
-    if (this.isSelecting) {
-        const width = Math.abs(x - this.startPos.x); // Calculate absolute width
-        const height = Math.abs(y - this.startPos.y); // Calculate absolute height
-        const rectX = Math.min(x, this.startPos.x); // Determine the top-left X coordinate of the rectangle
-        const rectY = Math.min(y, this.startPos.y); // Determine the top-left Y coordinate of the rectangle
+        if (this.isSelecting) {
+            const width = Math.abs(x - this.startPos.x); // Calculate absolute width
+            const height = Math.abs(y - this.startPos.y); // Calculate absolute height
+            const rectX = Math.min(x, this.startPos.x); // Determine the top-left X coordinate of the rectangle
+            const rectY = Math.min(y, this.startPos.y); // Determine the top-left Y coordinate of the rectangle
 
-        this.selectionRect.setPosition(rectX, rectY);
-        this.selectionRect.setSize(width, height);
+            this.selectionRect.setPosition(rectX, rectY);
+            this.selectionRect.setSize(width, height);
 
-        this.graphics.clear();
-        this.graphics.fillStyle(0x00ff00, 0.4); // Transparent green color
-        this.graphics.fillRect(rectX, rectY, width, height);
+            this.graphics.clear();
+            this.graphics.fillStyle(0x00ff00, 0.4); // Transparent green color
+            this.graphics.fillRect(rectX, rectY, width, height);
+        }
     }
-    }
 
-    handleSelection(WF: any, player: Phaser.GameObjects.Sprite): void {
-        if (!this.isSelecting) { return; }
+    handleSelection(WF: Warfrost, player: Phaser.GameObjects.Sprite): void {
+        if (!this.isSelecting) return;
         const playerId = player.getData('id');
         const isSelected = player.getData('selected');
         // Check for spriting collision with selection zone
         if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), this.selectionRect)) {
-            if (isSelected) { return; }
+            if (isSelected) return;
             player.setTint(0x00ff00);
             WF.selected = `player::select::#${playerId}`;
             player.setData('selected', true);
             WF.socket.send(WF.selected);
         } else {
-            if (!isSelected) { return; }
+            if (!isSelected) return;
             player.clearTint();
             WF.selected = `player::unselect::#${playerId}`;
             player.setData('selected', false);
