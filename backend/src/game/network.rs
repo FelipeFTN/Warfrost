@@ -12,27 +12,10 @@ pub fn players_update(players: &mut Players, text: &String, responder: &Responde
     }
 }
 
-pub fn player_select(players: &mut Players, text: &String, responder: &Responder) {
-    if let Some( id ) = get_id(text.to_string()) {
-        players.set_selected(id, true);
-    } else {
-        responder.send(Message::Text(format!("Error: {:?}", text)));
-    }
-}
-
-pub fn player_unselect(players: &mut Players, text: &String, responder: &Responder) {
-    if let Some( id ) = get_id(text.to_string()) {
-        players.set_selected(id, false);
-    } else {
-        responder.send(Message::Text(format!("Error: {:?}", text)));
-    }
-}
-
-pub fn mouse_click(players: &mut Players, text: &String, responder: &Responder) {
-    if let Some((x, y)) = get_coordinates(text.to_string()) {
-        if let Some( id ) = players.get_selected() {
-            players.update_player(id, x, y);
-        }
+// Received a message from client #3: players::move::[{"id": 3, "x": 220, "y": 37}, {"id": 2, "x": 48, "y": 238}]
+pub fn player_move(players: &mut Players, text: &String, responder: &Responder) {
+    if let Some( move_players ) = get_players(text.to_string()) {
+        players.set_players(move_players);
     } else {
         responder.send(Message::Text(format!("Error: {:?}", text)));
     }

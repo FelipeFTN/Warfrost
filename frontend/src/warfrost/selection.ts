@@ -41,21 +41,16 @@ export class Selection {
 
     handleSelection(WF: Warfrost, player: Phaser.GameObjects.Sprite): void {
         if (!this.isSelecting) return;
-        const playerId = player.getData('id');
         const isSelected = player.getData('selected');
         // Check for spriting collision with selection zone
         if (Phaser.Geom.Intersects.RectangleToRectangle(player.getBounds(), this.selectionRect)) {
             if (isSelected) return;
             player.setTint(0x00ff00);
-            WF.selected = `player::select::#${playerId}`;
             player.setData('selected', true);
-            WF.socket.send(WF.selected);
         } else {
             if (!isSelected) return;
             player.clearTint();
-            WF.selected = `player::unselect::#${playerId}`;
             player.setData('selected', false);
-            WF.socket.send(WF.selected);
         }
     }
 

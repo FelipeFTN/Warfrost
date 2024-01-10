@@ -27,7 +27,6 @@ export default {
     },
 
     plugins: [
-
         //  Toggle the booleans here to enable / disable Phaser 3 features:
         replace({
             preventAssignment: true,
@@ -38,7 +37,7 @@ export default {
             'typeof PLUGIN_CAMERA3D': JSON.stringify(false),
             'typeof PLUGIN_FBINSTANT': JSON.stringify(false),
             'typeof FEATURE_SOUND': JSON.stringify(true),
-            'process.env.HOST': JSON.stringify(process.env.HOST || "localhost"),
+            'process.env.HOST': JSON.stringify(process.env.HOST || "0.0.0.0"),
             'process.env.PORT': JSON.stringify(process.env.PORT || "8080"),
         }),
 
@@ -70,12 +69,12 @@ export default {
         serve({
             open: true,
             contentBase: 'dist',
-            host: 'localhost',
-            port: 80,
+            // host: '0.0.0.0',
+            host: '0.0.0.0',
+            port: 3000,
             headers: {
                 'Access-Control-Allow-Origin': '*'
             }
         })
-
     ]
 };

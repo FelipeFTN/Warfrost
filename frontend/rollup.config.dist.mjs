@@ -23,7 +23,6 @@ export default {
     },
 
     plugins: [
-
         //  Toggle the booleans here to enable / disable Phaser 3 features:
         replace({
             preventAssignment: true,
@@ -62,6 +61,5 @@ export default {
 
         //  See https://github.com/rollup/plugins/tree/master/packages/terser for config options
         terser()
-
     ]
 };

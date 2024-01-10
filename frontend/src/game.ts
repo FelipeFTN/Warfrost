@@ -3,7 +3,6 @@ import * as Phaser from 'phaser';
 import Selection from './warfrost/selection';
 import * as Models from './warfrost/models';
 import Pathfind from './warfrost/pathfind';
-import * as WF from './warfrost/handlers';
 import Socket from './network/websocket';
 
 class Warfrost extends Phaser.Scene {
@@ -47,9 +46,6 @@ class Warfrost extends Phaser.Scene {
 
         // Player socket event listener
         this.socket.on("players::update", this);
-
-        // Cursor Listener
-        WF.cursorHandler(this);
 
         // Pathfind
         // this.pathfind = new Pathfind(this);
@@ -102,8 +98,21 @@ class Warfrost extends Phaser.Scene {
 
             // Checks for any player interation
             this.players[player.id].on("pointerdown", (pointer: Phaser.Input.Pointer) => (
-                WF.playerClicked(pointer, player.id, this)
+                if (pointer.leftButtonDown()) {
+                    this.players[player.id].setData('selected', true);
+                }
             ));
+
+            this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+                if (pointer.rightButtonDown()) {
+                    const { x, y } = pointer.position;
+                    if (!this.players[player.id].getData('selected')) return;
+                    this.players[player.id].x = x;
+                    this.players[player.id].y = y;
+                    // Needs formatation to send players::update::[{id: 0, x: 10, y: 10...}, {...}]
+                    this.socket.send(`players::move::[{id: ${player.id}, x: ${x}, y: ${y}}]`);
+                }
+            });
         });
 
         const playersIds = this.playersData.map((item: Models.PlayerData) => item.id);

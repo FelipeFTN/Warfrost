@@ -7,7 +7,7 @@ use crate::game::players::{Players, Player};
 use crate::pathfind::models::Grid;
 
 pub fn get_players(text: String) -> Option<Vec<Player>> {
-    let regex = Regex::new(r"players::update::(\[[^\]]+\])").unwrap();
+    let regex = Regex::new(r"::(\[[^\]]+\])").unwrap();
     if let Some(captures) = regex.captures(&text) {
         let players_str = captures.get(1).unwrap().as_str();
         match serde_json::from_str(players_str) {

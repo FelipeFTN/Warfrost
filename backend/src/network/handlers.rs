@@ -16,20 +16,14 @@ pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, R
             text if text.contains("players::update") => {
                 players_update(players, text, responder);
             }
-            text if text.contains("player::select") => {
-                player_select(players, text, responder);
-            }
-            text if text.contains("player::unselect") => {
-                player_unselect(players, text, responder);
-            }
-            text if text.contains("mouse::right::click") => {
-                mouse_click(players, text, responder);
+            text if text.contains("players::move") => {
+                player_move(players, text, responder)
             }
             text if text.contains("pathfind::grid") => {
                 pathfind(players, grids, text, responder);
             }
             _ => {
-                responder.send(Message::Text(String::from("Hello from Server")));
+                responder.send(Message::Text(String::from("Error: Unhandled message from server")));
             }
         }
         update_players(clients, players);
