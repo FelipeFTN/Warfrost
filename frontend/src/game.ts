@@ -52,7 +52,7 @@ class Warfrost extends Phaser.Scene {
         WF.cursorHandler(this);
 
         // Pathfind
-        this.pathfind = new Pathfind(this);
+        // this.pathfind = new Pathfind(this);
 
         // Set up selection
         this.selection = new Selection(this);
@@ -71,7 +71,7 @@ class Warfrost extends Phaser.Scene {
         this.input.on('pointerup', this.onPointerUp, this);
 
         // Pathfind
-        this.pathfind.draw();
+        // this.pathfind.draw();
 
         // Set clientID
         this.socket.on("client::id", this);
