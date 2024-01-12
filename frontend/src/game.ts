@@ -4,6 +4,7 @@ import Selection from './warfrost/selection';
 import * as Models from './warfrost/models';
 import Pathfind from './warfrost/pathfind';
 import Socket from './network/websocket';
+import Player from './warfrost/player';
 
 class Warfrost extends Phaser.Scene {
 
@@ -23,6 +24,10 @@ class Warfrost extends Phaser.Scene {
 
     constructor() {
         super("Warfrost");
+        
+        // Shitty variable, but this just exists
+        // for we to track how many players
+        // we have active in the session.
         this.players = {};
         this.socket = new Socket(process.env.HOST, process.env.PORT);
     }
@@ -78,39 +83,44 @@ class Warfrost extends Phaser.Scene {
         // Player socket event listener
         this.socket.on("players::update", this);
 
-        // Pathfind
-
         this.playersData.forEach((player: Models.PlayerData) => {
-            // If player does exists, update its position
+            // If player already exists, update its position
             if (this.players[player.id]) {
                 // Update position & Check for selection
-                this.players[player.id].setPosition(player.x, player.y);
-                this.selection.handleSelection(this, this.players[player.id]);
+                // this.players[player.id].p.setPosition(player.x, player.y);
+                this.players[player.id].move({x: player.x, y: player.y})
+                this.selection.handleSelection(this.players[player.id]);
                 return;
             }
 
             // ... If not, then, create it
-            this.players[player.id] = this.add.sprite(player.x, player.y, "player");
-            this.players[player.id].setInteractive();
-            this.players[player.id].setDepth(1);
-            this.players[player.id].setData('id', player.id);
-            this.players[player.id].setData('selected', false);
+            const p : Player = new Player(this, player);
+
+            p.player = this.add.sprite(player.x, player.y, "player");
+            p.player.setInteractive();
+            p.player.setDepth(1);
+            p.player.setData('id', player.id);
+            p.player.setData('selected', false);
+
+            // Set player into players object
+            this.players[p.getId()] = p;
 
             // Checks for any player interation
-            this.players[player.id].on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+            p.player.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 if (pointer.leftButtonDown()) {
-                    this.players[player.id].setData('selected', true);
+                    p.player.setData('selected', true);
                 }
             });
 
             this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
                 if (pointer.rightButtonDown()) {
-                    const { x, y } = pointer.position;
-                    if (!this.players[player.id].getData('selected')) return;
-                    this.players[player.id].x = x;
-                    this.players[player.id].y = y;
+                    const mouse_vector = pointer.position;
+                    if (!p.player.getData('selected')) return;
+                    // Movement happens here!!
+                    console.log("Moving now!!")
+                    p.move(mouse_vector);
                     // Needs formatation to send players::update::[{id: 0, x: 10, y: 10...}, {...}]
-                    this.socket.send(`players::move::[{"id": ${player.id}, "x": ${x}, "y": ${y}}]`);
+                    // this.socket.send(`players::move::[{"id": ${player.id}, "x": ${x}, "y": ${y}}]`);
                 }
             });
         });

@@ -31,7 +31,7 @@ class Socket {
         // Handle WebSocket message received event
         this.socket.onmessage = (event: MessageEvent) => {
             this.message = event.data;
-            if (this.message.includes("Error")) {
+            if (this.message.toLowerCase().includes("error")) {
                 console.error(this.message);
                 return;
             }
@@ -45,7 +45,7 @@ class Socket {
         };
     }
 
-    // Trying to unfuck message system.
+    // Trying to unfuck the message system.
     // A message queue is necessary for the front-end do not skip
     // any message comming from the server; since server process
     // data a lot faster than client.

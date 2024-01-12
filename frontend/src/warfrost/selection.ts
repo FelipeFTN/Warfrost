@@ -39,7 +39,7 @@ export class Selection {
         }
     }
 
-    handleSelection(WF: Warfrost, player: Phaser.GameObjects.Sprite): void {
+    handleSelection(player: Phaser.GameObjects.Sprite): void {
         if (!this.isSelecting) return;
         const isSelected = player.getData('selected');
         // Check for spriting collision with selection zone

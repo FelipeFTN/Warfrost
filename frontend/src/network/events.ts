@@ -10,11 +10,13 @@ function getId(message: string, WF: Warfrost) {
     }
 }
 
+// DEPRECATED: I will be using the updatePlayers function
+// with some stupid logic to make the players moves correctly.
 function movePlayer(message: string, WF: Warfrost) {
     if (!message.includes("player::move")) { return; }
-    let move: {id: number, x: number, y: number};
-    if ((move = utils.getCoordinates(message))) {
-        WF.players[move.id].setPosition(move.x, move.y);
+    let player: {id: number, x: number, y: number};
+    if ((player = utils.getCoordinates(message))) {
+        WF.players[player.id].setPosition(player.x, player.y);
     }
 }
 
