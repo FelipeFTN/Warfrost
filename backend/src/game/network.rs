@@ -8,7 +8,7 @@ pub fn players_update(players: &mut Players, text: &String, responder: &Responde
     if let Some( new_players ) = get_players(text.to_string()) {
         players.set_players(new_players);
     } else {
-        responder.send(Message::Text(format!("Error: {:?}", text)));
+        responder.send(Message::Text(format!("Back-end Error: {:?}", text)));
     }
 }
 
@@ -17,7 +17,7 @@ pub fn player_move(players: &mut Players, text: &String, responder: &Responder) 
     if let Some( move_players ) = get_players(text.to_string()) {
         players.set_players(move_players);
     } else {
-        responder.send(Message::Text(format!("Error: {:?}", text)));
+        responder.send(Message::Text(format!("Back-end Error: {:?}", text)));
     }
 }
 
@@ -30,6 +30,6 @@ pub fn pathfind(_players: &mut Players, grids: &mut Grids, text: &String, respon
         }
         grids.add_grids(game_grids);
     } else {
-        responder.send(Message::Text(format!("Error: {:?}", text)));
+        responder.send(Message::Text(format!("Back-end Error: {:?}", text)));
     }
 }

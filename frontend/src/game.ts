@@ -97,11 +97,11 @@ class Warfrost extends Phaser.Scene {
             this.players[player.id].setData('selected', false);
 
             // Checks for any player interation
-            this.players[player.id].on("pointerdown", (pointer: Phaser.Input.Pointer) => (
+            this.players[player.id].on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 if (pointer.leftButtonDown()) {
                     this.players[player.id].setData('selected', true);
                 }
-            ));
+            });
 
             this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
                 if (pointer.rightButtonDown()) {
@@ -110,7 +110,7 @@ class Warfrost extends Phaser.Scene {
                     this.players[player.id].x = x;
                     this.players[player.id].y = y;
                     // Needs formatation to send players::update::[{id: 0, x: 10, y: 10...}, {...}]
-                    this.socket.send(`players::move::[{id: ${player.id}, x: ${x}, y: ${y}}]`);
+                    this.socket.send(`players::move::[{"id": ${player.id}, "x": ${x}, "y": ${y}}]`);
                 }
             });
         });

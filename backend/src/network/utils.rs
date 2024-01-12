@@ -15,7 +15,10 @@ pub fn get_players(text: String) -> Option<Vec<Player>> {
                 let players: Vec<Player> = players_json;
                 Some(players)
             },
-            Err(_) => None,
+            Err(e) => {
+                println!("players: {:?}", e);
+                None
+            },
         }
     } else {
         None
