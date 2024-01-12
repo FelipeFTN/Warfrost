@@ -23,7 +23,7 @@ pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, R
                 pathfind(players, grids, text, responder);
             }
             _ => {
-                responder.send(Message::Text(String::from("Error: Unhandled message from server")));
+                responder.send(Message::Text(String::from("Error: Unhandled message from Server")));
             }
         }
         update_players(clients, players);
@@ -50,7 +50,7 @@ pub fn ws_connect(
     responder: Responder,
 ) {
     println!("A client connected with id #{}.", client_id);
-    clients.insert(client_id, responder);
+    clients.insert(client_id, responder.clone());
     clients.get(&client_id).unwrap().send(Message::Text(
         format!("client::id::#{}", client_id)
     ));
@@ -58,6 +58,6 @@ pub fn ws_connect(
         players.add_player(x, y);
         update_players(clients, players);
     } else {
-        panic!("error: get_coordinates");
+        responder.send(Message::Text(String::from("Error: could not perform connection due to bad Cooordinates")));
     }
 }
