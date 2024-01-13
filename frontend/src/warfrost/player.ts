@@ -12,7 +12,6 @@ class Player {
 
     constructor(scene: Warfrost, player: Models.PlayerData) {
         this.scene = scene;
-        this.position.set(this.player.x, this.player.y);
         this.id = player.id;
         this.health = 100;
     }
@@ -20,13 +19,9 @@ class Player {
     // Getters & Setters
     getId() : number { return this.id; }
 
-    setPosition(position: Phaser.Math.Vector2) {
-        this.player.x = position.x;
-        this.player.y = position.y;
-        this.position = position;
+    getPosition() : Phaser.Math.Vector2 {
+        return new Phaser.Math.Vector2(this.player.x, this.player.y);
     }
-
-    getPosition() : Phaser.Math.Vector2 { return this.position.set(this.player.x, this.player.y); }
 
     // If it's true, then the player moved
     // if not... well, you know.
@@ -36,14 +31,17 @@ class Player {
     }
 
     // This should make the player move properly
-    move(destination: Phaser.Math.Vector2) {
-        // const difference : Phaser.Math.Vector2 = (this.position - destination).normalize()
-        // const movement = this.position.subtract(destination).normalize();
+    move(WF: Warfrost) {
+        const destination : Phaser.Math.Vector2 = this.player.getData("destination");
+        if (destination == null) { return }
         if (this.getPosition().equals(destination)) { return; }
 
-        const movement = this.getPosition().subtract(destination);
+        WF.physics.moveToObject(this.player, destination, 200);
 
-        this.setPosition(movement);
+        // const movement = this.getPosition().subtract(destination);
+        // const movement = destination.subtract(this.getPosition());
+
+        // console.log(movement);
     }
 }
 export default Player;

@@ -86,10 +86,12 @@ class Warfrost extends Phaser.Scene {
         this.playersData.forEach((player: Models.PlayerData) => {
             // If player already exists, update its position
             if (this.players[player.id]) {
-                // Update position & Check for selection
-                // this.players[player.id].p.setPosition(player.x, player.y);
-                this.players[player.id].move({x: player.x, y: player.y})
-                this.selection.handleSelection(this.players[player.id]);
+                // console.log(`player: ${this.players[player.id].player}`)
+                const p = this.players[player.id];
+
+                // p.move(this)
+
+                this.selection.handleSelection(this.players[player.id].player);
                 return;
             }
 
@@ -114,15 +116,17 @@ class Warfrost extends Phaser.Scene {
 
             this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
                 if (pointer.rightButtonDown()) {
-                    const mouse_vector = pointer.position;
                     if (!p.player.getData('selected')) return;
-                    // Movement happens here!!
-                    console.log("Moving now!!")
-                    p.move(mouse_vector);
+
+                    const mouse_vector = pointer.position;
+                    p.player.setData("destination", new Phaser.Math.Vector2(mouse_vector));
+                    this.physics.moveToObject(p.player, mouse_vector, 200);
+
                     // Needs formatation to send players::update::[{id: 0, x: 10, y: 10...}, {...}]
                     // this.socket.send(`players::move::[{"id": ${player.id}, "x": ${x}, "y": ${y}}]`);
                 }
             });
+            // p.move(this);
         });
 
         const playersIds = this.playersData.map((item: Models.PlayerData) => item.id);
@@ -159,6 +163,9 @@ const config: Phaser.Types.Core.GameConfig = {
     height: 600,
     scene: Warfrost,
     pixelArt: true,
+    physics: {
+        default: 'arcade'
+    },
 };
 
 const game = new Phaser.Game(config);
