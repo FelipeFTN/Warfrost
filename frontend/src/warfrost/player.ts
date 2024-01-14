@@ -2,25 +2,33 @@ import * as Models from '../warfrost/models';
 import * as Phaser from 'phaser';
 import Warfrost from '../game';
 
-class Player {
+class Player extends Phaser.GameObjects.Sprite {
+    body: Phaser.Physics.Arcade.Body;
+
     private id : number;
-    private speed : number; // TODO: Acceleration too
-    private health : number;
+    private speed : number = 100; // TODO: Acceleration too
+    private health : number = 100;
     private position : Phaser.Math.Vector2;
     public player : Phaser.GameObjects.Sprite;
-    private scene : Warfrost;
+    private WF : Warfrost;
 
-    constructor(scene: Warfrost, player: Models.PlayerData) {
-        this.scene = scene;
+    constructor(WF: Warfrost, player: Models.PlayerData) {
+        super(WF, player.x, player.y, "player");
+        this.setTexture("player");
         this.id = player.id;
-        this.health = 100;
+        this.scene = WF;
+
+        // GLOBAL STUFF
+        this.scene.physics.world.enableBody(this);
+        this.body.setAllowGravity(false);
+        this.scene.add.existing(this);
     }
 
     // Getters & Setters
     getId() : number { return this.id; }
 
     getPosition() : Phaser.Math.Vector2 {
-        return new Phaser.Math.Vector2(this.player.x, this.player.y);
+        return new Phaser.Math.Vector2(this.x, this.y);
     }
 
     // If it's true, then the player moved
@@ -32,11 +40,16 @@ class Player {
 
     // This should make the player move properly
     move(WF: Warfrost) {
-        const destination : Phaser.Math.Vector2 = this.player.getData("destination");
-        if (destination == null) { return }
-        if (this.getPosition().equals(destination)) { return; }
+        const destination : Phaser.Math.Vector2 = this.getData("destination");
+        if (destination == null) { return; }
+        if (this.speed > 0) {
+            if (Phaser.Math.Distance.BetweenPoints(this, destination) <= 2) { 
+                this.body.reset(destination.x, destination.y);
+                return;
+            }
+        }
 
-        WF.physics.moveToObject(this.player, destination, 200);
+        WF.physics.moveToObject(this, destination, this.speed);
 
         // const movement = this.getPosition().subtract(destination);
         // const movement = destination.subtract(this.getPosition());

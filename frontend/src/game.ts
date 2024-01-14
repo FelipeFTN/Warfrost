@@ -88,45 +88,41 @@ class Warfrost extends Phaser.Scene {
             if (this.players[player.id]) {
                 // console.log(`player: ${this.players[player.id].player}`)
                 const p = this.players[player.id];
-
-                // p.move(this)
-
-                this.selection.handleSelection(this.players[player.id].player);
+                this.selection.handleSelection(p);
+                p.move(this);
                 return;
             }
 
             // ... If not, then, create it
             const p : Player = new Player(this, player);
 
-            p.player = this.add.sprite(player.x, player.y, "player");
-            p.player.setInteractive();
-            p.player.setDepth(1);
-            p.player.setData('id', player.id);
-            p.player.setData('selected', false);
+            p.setInteractive();
+            p.setDepth(1);
+            p.setData('id', player.id);
+            p.setData('selected', false);
 
             // Set player into players object
             this.players[p.getId()] = p;
 
             // Checks for any player interation
-            p.player.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+            p.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 if (pointer.leftButtonDown()) {
-                    p.player.setData('selected', true);
+                    p.setData('selected', true);
                 }
             });
 
-            this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-                if (pointer.rightButtonDown()) {
-                    if (!p.player.getData('selected')) return;
+            this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+                if (pointer.rightButtonReleased()) {
+                    if (!p.getData('selected')) return;
 
                     const mouse_vector = pointer.position;
-                    p.player.setData("destination", new Phaser.Math.Vector2(mouse_vector));
-                    this.physics.moveToObject(p.player, mouse_vector, 200);
+                    p.setData("destination", new Phaser.Math.Vector2(mouse_vector));
 
                     // Needs formatation to send players::update::[{id: 0, x: 10, y: 10...}, {...}]
                     // this.socket.send(`players::move::[{"id": ${player.id}, "x": ${x}, "y": ${y}}]`);
                 }
             });
-            // p.move(this);
+            p.move(this);
         });
 
         const playersIds = this.playersData.map((item: Models.PlayerData) => item.id);
@@ -144,12 +140,15 @@ class Warfrost extends Phaser.Scene {
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer): void {
-        if (pointer.rightButtonDown()) return;
-        this.selection.startSelection(pointer.x, pointer.y);
+        if (pointer.leftButtonDown()) {
+            this.selection.startSelection(pointer.x, pointer.y);
+        }
     }
 
-    onPointerUp(_pointer: Phaser.Input.Pointer): void {
-        this.selection.endSelection();
+    onPointerUp(pointer: Phaser.Input.Pointer): void {
+        if (pointer.leftButtonReleased()) {
+            this.selection.endSelection();
+        }
     }
 
     onPointerMove(pointer: Phaser.Input.Pointer): void {
