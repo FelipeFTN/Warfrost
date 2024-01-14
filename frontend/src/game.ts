@@ -83,23 +83,23 @@ class Warfrost extends Phaser.Scene {
         // Player socket event listener
         this.socket.on("players::update", this);
 
-        this.playersData.forEach((player: Models.PlayerData) => {
+        this?.playersData?.forEach((player: Models.PlayerData) => {
             // If player already exists, update its position
             if (this.players[player.id]) {
                 // console.log(`player: ${this.players[player.id].player}`)
                 const p = this.players[player.id];
                 this.selection.handleSelection(p);
-                p.move(this);
+
+                // Move player 
+                p.setData("destination", new Phaser.Math.Vector2(player.x, player.y));
+                p.move();
+                // Update player in players list
+                this.players[p.id] = p;
                 return;
             }
 
             // ... If not, then, create it
             const p : Player = new Player(this, player);
-
-            p.setInteractive();
-            p.setDepth(1);
-            p.setData('id', player.id);
-            p.setData('selected', false);
 
             // Set player into players object
             this.players[p.getId()] = p;
@@ -119,10 +119,10 @@ class Warfrost extends Phaser.Scene {
                     p.setData("destination", new Phaser.Math.Vector2(mouse_vector));
 
                     // Needs formatation to send players::update::[{id: 0, x: 10, y: 10...}, {...}]
-                    // this.socket.send(`players::move::[{"id": ${player.id}, "x": ${x}, "y": ${y}}]`);
+                    this.socket.send(`players::move::[{"id": ${p.id}, "x": ${Math.floor(mouse_vector.x)}, "y": ${Math.floor(mouse_vector.y)}}]`);
                 }
             });
-            p.move(this);
+            // p.move();
         });
 
         const playersIds = this.playersData.map((item: Models.PlayerData) => item.id);

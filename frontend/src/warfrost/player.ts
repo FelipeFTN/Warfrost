@@ -5,7 +5,7 @@ import Warfrost from '../game';
 class Player extends Phaser.GameObjects.Sprite {
     body: Phaser.Physics.Arcade.Body;
 
-    private id : number;
+    public id : number;
     private speed : number = 100; // TODO: Acceleration too
     private health : number = 100;
     private position : Phaser.Math.Vector2;
@@ -17,6 +17,12 @@ class Player extends Phaser.GameObjects.Sprite {
         this.setTexture("player");
         this.id = player.id;
         this.scene = WF;
+
+        // Player - GameObjects - Stuff
+        this.setInteractive();
+        this.setDepth(1);
+        this.setData('id', player.id);
+        this.setData('selected', false);
 
         // GLOBAL STUFF
         this.scene.physics.world.enableBody(this);
@@ -39,22 +45,18 @@ class Player extends Phaser.GameObjects.Sprite {
     }
 
     // This should make the player move properly
-    move(WF: Warfrost) {
+    move() {
         const destination : Phaser.Math.Vector2 = this.getData("destination");
         if (destination == null) { return; }
         if (this.speed > 0) {
+            // This should make the player stop properly
             if (Phaser.Math.Distance.BetweenPoints(this, destination) <= 2) { 
                 this.body.reset(destination.x, destination.y);
                 return;
             }
         }
 
-        WF.physics.moveToObject(this, destination, this.speed);
-
-        // const movement = this.getPosition().subtract(destination);
-        // const movement = destination.subtract(this.getPosition());
-
-        // console.log(movement);
+        this.scene.physics.moveToObject(this, destination, this.speed);
     }
 }
 export default Player;
