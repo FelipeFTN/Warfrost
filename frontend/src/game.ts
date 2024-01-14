@@ -41,6 +41,7 @@ class Warfrost extends Phaser.Scene {
         // Set up socket
         this.socket.connect();
 
+        // Load images
         this.load.image("map", "assets/map.png");
         this.load.image("player", "assets/player.png");
     }
@@ -122,7 +123,6 @@ class Warfrost extends Phaser.Scene {
                     this.socket.send(`players::move::[{"id": ${p.id}, "x": ${Math.floor(mouse_vector.x)}, "y": ${Math.floor(mouse_vector.y)}}]`);
                 }
             });
-            // p.move();
         });
 
         const playersIds = this.playersData.map((item: Models.PlayerData) => item.id);
@@ -135,8 +135,6 @@ class Warfrost extends Phaser.Scene {
                 delete this.players[id];
             }
         }
-        // Server movement listener
-        this.socket.on("player::move", this);
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer): void {

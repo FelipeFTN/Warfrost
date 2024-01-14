@@ -66,10 +66,6 @@ class Socket {
                 events.removePlayer(firstMessage, WF);
                 this.messageQueue.shift();
                 break;
-            case "player::move":
-                events.movePlayer(firstMessage, WF);
-                this.messageQueue.shift();
-                break;
             default:
                 return false;
         }
