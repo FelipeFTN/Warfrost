@@ -4,13 +4,13 @@ import Selection from './warfrost/selection';
 import * as Models from './warfrost/models';
 import Pathfind from './warfrost/pathfind';
 import Socket from './network/websocket';
-import Player from './warfrost/player';
+import Unit from './warfrost/unit';
 
 class Warfrost extends Phaser.Scene {
 
     public pathfind: Pathfind;
 
-    public playersData: Array<Models.PlayerData>;
+    public unitsData: Array<Models.UnitData>;
 
     public clientId: number;
 
@@ -18,7 +18,7 @@ class Warfrost extends Phaser.Scene {
 
     public selected: string;
 
-    public players: object;
+    public units: object;
 
     public socket: Socket;
 
@@ -26,9 +26,9 @@ class Warfrost extends Phaser.Scene {
         super("Warfrost");
         
         // Shitty variable, but this just exists
-        // for we to track how many players
+        // for we to track how many units
         // we have active in the session.
-        this.players = {};
+        this.units = {};
         this.socket = new Socket(process.env.HOST, process.env.PORT);
     }
 
@@ -43,15 +43,15 @@ class Warfrost extends Phaser.Scene {
 
         // Load images
         this.load.image("map", "assets/map.png");
-        this.load.image("player", "assets/player.png");
+        this.load.image("unit", "assets/unit.png");
     }
 
     create() {
         // Display Map
         this.add.image(0, -300, "map").setOrigin(0);
 
-        // Player socket event listener
-        this.socket.on("players::update", this);
+        // Unit socket event listener
+        this.socket.on("units::update", this);
 
         // Pathfind
         // this.pathfind = new Pathfind(this);
@@ -61,9 +61,9 @@ class Warfrost extends Phaser.Scene {
     }
 
     // -----------------------------------------------------
-    // PLAYERS DATA TYPES:
-    // players    = {id: { Phaser Sprite Object}, id: {...}}
-    // playerData = [{id: 0, x: 10, y: 10}, {...}]
+    // units DATA TYPES:
+    // units    = {id: { Phaser Sprite Object}, id: {...}}
+    // unitData = [{id: 0, x: 10, y: 10}, {...}]
     // -----------------------------------------------------
 
     update() {
@@ -81,32 +81,32 @@ class Warfrost extends Phaser.Scene {
         // Disconnect Listener 
         this.socket.on("client::disconnect", this);
 
-        // Player socket event listener
-        this.socket.on("players::update", this);
+        // Unit socket event listener
+        this.socket.on("units::update", this);
 
-        // Create or Update New Players!
-        this?.playersData?.forEach((player: Models.PlayerData) => {
-            // If player already exists, update its position
-            if (this.players[player.id]) {
-                // console.log(`player: ${this.players[player.id].player}`)
-                const p = this.players[player.id];
+        // Create or Update New Units!
+        this?.unitsData?.forEach((unit: Models.UnitData) => {
+            // If unit already exists, update its position
+            if (this.units[unit.id]) {
+                // console.log(`unit: ${this.units[unit.id].unit}`)
+                const p = this.units[unit.id];
                 this.selection.handleSelection(p);
 
-                // Move player 
-                p.setData("destination", new Phaser.Math.Vector2(player.x, player.y));
+                // Move unit 
+                p.setData("destination", new Phaser.Math.Vector2(unit.x, unit.y));
                 p.move();
-                // Update player in players list
-                this.players[p.id] = p;
+                // Update unit in units list
+                this.units[p.id] = p;
                 return;
             }
 
             // ... If not, then, create it
-            const p : Player = new Player(this, player);
+            const p : Unit = new Unit(this, unit);
 
-            // Set player into players object
-            this.players[p.getId()] = p;
+            // Set unit into units object
+            this.units[p.getId()] = p;
 
-            // Checks for any player interation
+            // Checks for any unit interation
             p.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
                 if (pointer.leftButtonDown()) {
                     p.setData('selected', true);
@@ -120,20 +120,21 @@ class Warfrost extends Phaser.Scene {
                     const mouse_vector = pointer.position;
                     p.setData("destination", new Phaser.Math.Vector2(mouse_vector));
 
-                    // Needs formatation to send players::update::[{id: 0, x: 10, y: 10...}, {...}]
-                    this.socket.send(`players::move::[{"id": ${p.id}, "x": ${Math.floor(mouse_vector.x)}, "y": ${Math.floor(mouse_vector.y)}}]`);
+                    // Needs formatation to send units::update::[{id: 0, x: 10, y: 10...}, {...}]
+                    this.socket.send(`units::move::[{"id": ${p.id}, "x": ${Math.floor(mouse_vector.x)}, "y": ${Math.floor(mouse_vector.y)}}]`);
                 }
             });
         });
 
-        const playersIds = this.playersData.map((item: Models.PlayerData) => item.id);
+        if (this.unitsData === undefined) { console.log("Warning: Units Data is Undefined."); }
+        const unitsIds = this.unitsData?.map((item: Models.UnitData) => item.id);
 
-        // Check every players saved into front-end
-        for (const id in this.players) {
-            // Checks if some player disconnected and destroy it
-            if (!playersIds.includes(Number(id))) {
-                this.players[id].destroy();
-                delete this.players[id];
+        // Check every units saved into front-end
+        for (const id in this.units) {
+            // Checks if some unit disconnected and destroy it
+            if (!unitsIds.includes(Number(id))) {
+                this.units[id].destroy();
+                delete this.units[id];
             }
         }
     }

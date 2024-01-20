@@ -2,26 +2,26 @@ import * as Models from '../warfrost/models';
 import * as Phaser from 'phaser';
 import Warfrost from '../game';
 
-class Player extends Phaser.GameObjects.Sprite {
+class Unit extends Phaser.GameObjects.Sprite {
     body: Phaser.Physics.Arcade.Body;
 
     public id : number;
     public team : number;
     private speed : number = 100; // TODO: Acceleration too
     private health : number = 100;
-    public player : Phaser.GameObjects.Sprite;
+    public unit : Phaser.GameObjects.Sprite;
     private WF : Warfrost;
 
-    constructor(WF: Warfrost, player: Models.PlayerData) {
-        super(WF, player.x, player.y, "player");
-        this.setTexture("player");
-        this.id = player.id;
+    constructor(WF: Warfrost, unit: Models.UnitData) {
+        super(WF, unit.x, unit.y, "unit");
+        this.setTexture("unit");
+        this.id = unit.id;
         this.scene = WF;
 
-        // Player - GameObjects - Stuff
+        // Unit - GameObjects - Stuff
         this.setInteractive();
         this.setDepth(1);
-        this.setData('id', player.id);
+        this.setData('id', unit.id);
         this.setData('selected', false);
         this.setData('team', WF.clientId);
 
@@ -38,19 +38,19 @@ class Player extends Phaser.GameObjects.Sprite {
         return new Phaser.Math.Vector2(this.x, this.y);
     }
 
-    // If it's true, then the player moved
+    // If it's true, then the unit moved
     // if not... well, you know.
     comparePositionMove(x: number, y: number) : boolean {
         if (this.getPosition().x != x || this.getPosition().y != y) return true;
         return false;
     }
 
-    // This should make the player move properly
+    // This should make the unit move properly
     move() {
         const destination : Phaser.Math.Vector2 = this.getData("destination");
         if (destination == null) { return; }
         if (this.speed > 0) {
-            // This should make the player stop properly
+            // This should make the unit stop properly
             if (Phaser.Math.Distance.BetweenPoints(this, destination) <= 2) { 
                 this.body.reset(destination.x, destination.y);
                 return;
@@ -60,4 +60,4 @@ class Player extends Phaser.GameObjects.Sprite {
         this.scene.physics.moveToObject(this, destination, this.speed);
     }
 }
-export default Player;
+export default Unit;

@@ -10,23 +10,23 @@ function getId(message: string, WF: Warfrost) {
     }
 }
 
-function updatePlayers(message: string, WF: Warfrost) {
-    if (!message.includes("players::update")) { return; }
-    let players: Array<Models.PlayerData>;
-    if ((players = utils.getPlayers(message))) {
-        WF.playersData = players;
+function updateUnits(message: string, WF: Warfrost) {
+    if (!message.includes("units::update")) { return; }
+    let units: Array<Models.UnitData>;
+    if ((units = utils.getUnits(message))) {
+        WF.unitsData = units;
     }
 }
 
-function removePlayer(message: string, WF: Warfrost) {
+function removeUnit(message: string, WF: Warfrost) {
     if (!message.includes("client::disconnected")) { return; }
     let id: number;
     if ((id = utils.getId(message))) {
-        WF.playersData.map((player: Models.PlayerData) => {
-            if (player.id !== id) return;
-            WF.playersData.splice(id, 1);
+        WF.unitsData.map((unit: Models.UnitData) => {
+            if (unit.id !== id) return;
+            WF.unitsData.splice(id, 1);
         });
     }
 }
 
-export { getId, updatePlayers, removePlayer };
+export { getId, updateUnits, removeUnit };

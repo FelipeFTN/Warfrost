@@ -23,13 +23,13 @@ function getCoordinates(coordinates: string) {
     return null;
 }
 
-function getPlayers(message: string) {
-    const regex = /players::update::(\[.*\])/;
+function getUnits(message: string) {
+    const regex = /units::update::(\[.*\])/;
     const matches = message.match(regex);
 
     if (matches && matches.length === 2) {
-        const players = matches[1];
-        return JSON.parse(players);
+        const units = matches[1];
+        return JSON.parse(units);
     }
     return null;
 }
@@ -43,4 +43,4 @@ function formatObjectsArray(array: Array<object>, objectKeys: Array<string>) {
     return `[${objects.join(', ')}]`;
 }
 
-export { formatObjectsArray, getId, getCoordinates, getPlayers };
+export { formatObjectsArray, getId, getCoordinates, getUnits };

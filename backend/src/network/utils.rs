@@ -3,20 +3,20 @@ use simple_websockets::{Message, Responder};
 use std::collections::HashMap;
 use regex::Regex;
 
-use crate::game::players::{Players, Player};
+use crate::game::units::{Units, Unit};
 use crate::pathfind::models::Grid;
 
-pub fn get_players(text: String) -> Option<Vec<Player>> {
+pub fn get_units(text: String) -> Option<Vec<Unit>> {
     let regex = Regex::new(r"::(\[[^\]]+\])").unwrap();
     if let Some(captures) = regex.captures(&text) {
-        let players_str = captures.get(1).unwrap().as_str();
-        match serde_json::from_str(players_str) {
-            Ok(players_json) => {
-                let players: Vec<Player> = players_json;
-                Some(players)
+        let units_str = captures.get(1).unwrap().as_str();
+        match serde_json::from_str(units_str) {
+            Ok(units_json) => {
+                let units: Vec<Unit> = units_json;
+                Some(units)
             },
             Err(e) => {
-                println!("Error while handling player::move JSON: {:?}", e);
+                println!("Error while handling unit::move JSON: {:?}", e);
                 None
             },
         }
@@ -57,14 +57,14 @@ pub fn get_spawn() -> String {
     return String::from(format!("x{}y{}", x, y));
 }
 
-pub fn update_players(
+pub fn update_units(
     clients: &mut HashMap<u64, Responder>,
-    players: &mut Players,
+    units: &mut Units,
 ) {
     send_all_clients(clients,
         format!(
-            "players::update::{}",
-            players.get_players_json()
+            "units::update::{}",
+            units.get_units_json()
         )
     )
 }

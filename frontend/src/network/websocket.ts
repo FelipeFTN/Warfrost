@@ -58,12 +58,12 @@ class Socket {
                 events.getId(firstMessage, WF);
                 this.messageQueue.shift();
                 break;
-            case "players::update":
-                events.updatePlayers(firstMessage, WF);
+            case "units::update":
+                events.updateUnits(firstMessage, WF);
                 this.messageQueue.shift();
                 break;
             case "client::disconnect":
-                events.removePlayer(firstMessage, WF);
+                events.removeUnit(firstMessage, WF);
                 this.messageQueue.shift();
                 break;
             default:

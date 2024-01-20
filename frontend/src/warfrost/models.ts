@@ -1,4 +1,4 @@
-export interface PlayerData {
+export interface UnitData {
     id: number,
     x: number,
     y: number,
