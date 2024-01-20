@@ -20,10 +20,9 @@ Welcome to the TODO list for Warfrost. This file helps to keep track of tasks th
 - [ ] Set up continuous integration and automated testing.
 - [ ] Create documentation for installation, gameplay, and contribution.
 
-
 ## In Progress
 
-- [ ] Implement the core game loop and player actions.
+- [ ] Implement the core game loop and units actions.
 - [ ] Movementation system & Pathfind
 
 ## Completed
