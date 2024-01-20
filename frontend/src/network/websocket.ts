@@ -36,7 +36,7 @@ class Socket {
                 return;
             }
             this.messageQueue.push(this.message);
-            console.log(event.data);
+            console.log(`Back-end: ${event.data}`);
         };
 
         // Handle WebSocket connection close event

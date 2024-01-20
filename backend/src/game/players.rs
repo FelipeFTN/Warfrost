@@ -7,10 +7,13 @@ pub struct Player {
     id: u64,
     x: i16,
     y: i16,
+    team: Option<i8>,
+    class: Option<String>,
+    groups: Option<Vec<String>>,
 }
 
 impl Player {
-    fn new(x: i16, y: i16) -> Self {
+    fn new(x: i16, y: i16, team: Option<i8>, class: Option<String>, groups: Option<Vec<String>>) -> Self {
         static mut NEXT_ID: u64 = 0;
 
         // Use unsafe block to increment and assign the ID
@@ -20,7 +23,7 @@ impl Player {
             current_id
         };
 
-        Player { id, x, y}
+        Player { id, x, y, team, class, groups }
     }
 }
 
@@ -30,15 +33,14 @@ pub struct Players {
     players_map: HashMap<u64, Player>,
 }
 
-impl Players {
-    pub fn new() -> Self {
+impl Players { pub fn new() -> Self {
         Players {
             players_map: HashMap::new(),
         }
     }
 
-    pub fn add_player(&mut self, x: i16, y: i16) {
-        let player = Player::new(x, y);
+    pub fn add_player(&mut self, x: i16, y: i16, team: Option<i8>, class: Option<String>, groups: Option<Vec<String>>) {
+        let player = Player::new(x, y, team, class, groups);
         self.players_map.insert(player.id, player);
     }
 
@@ -46,6 +48,7 @@ impl Players {
         self.players_map.remove(&id);
     }
 
+    #[allow(dead_code)]
     pub fn update_player(&mut self, id: u64, new_x: i16, new_y: i16) {
         if let Some(player) = self.players_map.get_mut(&id) {
             player.x = new_x;
@@ -80,6 +83,9 @@ impl Players {
                 id,
                 x: player.x.clone(),
                 y: player.y.clone(),
+                team: player.team.clone(),
+                class: player.class.clone(),
+                groups: player.groups.clone(),
             })
             .collect();
         // Serialize the Vec<Player> to a JSON string

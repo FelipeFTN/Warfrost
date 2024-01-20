@@ -51,12 +51,11 @@ pub fn ws_connect(
 ) {
     println!("A client connected with id #{}.", client_id);
     clients.insert(client_id, responder.clone());
-    clients.get(&client_id).unwrap().send(Message::Text(
-        format!("client::id::#{}", client_id)
-    ));
     if let Some((x, y)) = get_coordinates(get_spawn()) {
-        players.add_player(x, y);
+        let team: i8 = client_id.try_into().unwrap(); // Convert to 8 bits integer
+        players.add_player(x, y, Some(team), Some(String::from("Default")), Some(Vec::new()));
         update_players(clients, players);
+        responder.send(Message::Text(String::from(format!("client::id::#{:?}", client_id))));
     } else {
         responder.send(Message::Text(String::from("Error: could not perform connection due to bad Cooordinates")));
     }

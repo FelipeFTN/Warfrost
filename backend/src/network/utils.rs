@@ -16,7 +16,7 @@ pub fn get_players(text: String) -> Option<Vec<Player>> {
                 Some(players)
             },
             Err(e) => {
-                println!("players: {:?}", e);
+                println!("Error while handling player::move JSON: {:?}", e);
                 None
             },
         }
@@ -25,6 +25,7 @@ pub fn get_players(text: String) -> Option<Vec<Player>> {
     }
 }
 
+#[allow(dead_code)]
 pub fn get_id(text: String) -> Option<u64> {
     let regex = regex::Regex::new(r"#(\d+)").unwrap();
     if let Some(captures) = regex.captures(&text) {

@@ -6,9 +6,9 @@ class Player extends Phaser.GameObjects.Sprite {
     body: Phaser.Physics.Arcade.Body;
 
     public id : number;
+    public team : number;
     private speed : number = 100; // TODO: Acceleration too
     private health : number = 100;
-    private position : Phaser.Math.Vector2;
     public player : Phaser.GameObjects.Sprite;
     private WF : Warfrost;
 
@@ -23,6 +23,7 @@ class Player extends Phaser.GameObjects.Sprite {
         this.setDepth(1);
         this.setData('id', player.id);
         this.setData('selected', false);
+        this.setData('team', WF.clientId);
 
         // GLOBAL STUFF
         this.scene.physics.world.enableBody(this);

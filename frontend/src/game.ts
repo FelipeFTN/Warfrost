@@ -84,6 +84,7 @@ class Warfrost extends Phaser.Scene {
         // Player socket event listener
         this.socket.on("players::update", this);
 
+        // Create or Update New Players!
         this?.playersData?.forEach((player: Models.PlayerData) => {
             // If player already exists, update its position
             if (this.players[player.id]) {
