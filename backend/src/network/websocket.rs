@@ -16,7 +16,7 @@ pub fn network(clients: &mut HashMap<u64, Responder>, units: &mut Units, grids: 
     loop {
         match event_hub.poll_event() {
             Event::Connect(client_id, responder) => {
-                ws_connect(client_id, clients, units, responder);
+                ws_connect(client_id, clients, responder);
             }
             Event::Disconnect(client_id) => {
                 ws_disconnect(client_id, clients, units);

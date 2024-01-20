@@ -20,7 +20,7 @@ class Socket {
         this.port = port;
     }
 
-    async connect() {
+    connect(WF: Warfrost) {
         this.socket = new WebSocket(`ws://${this.host}:${this.port}`);
 
         // Handle WebSocket connection open event
@@ -31,10 +31,13 @@ class Socket {
         // Handle WebSocket message received event
         this.socket.onmessage = (event: MessageEvent) => {
             this.message = event.data;
+            this.preload(WF)
+
             if (this.message.toLowerCase().includes("error")) {
                 console.error(this.message);
                 return;
             }
+
             this.messageQueue.push(this.message);
             console.log(`Back-end: ${event.data}`);
         };
@@ -74,6 +77,13 @@ class Socket {
 
     async send(message: string) {
         this.socket.send(message);
+    }
+
+    /// Preload function, to run with maximum priority over events
+    preload(WF: Warfrost) {
+        if (this.message.includes("client::id")) {
+            events.getId(this.message, WF);
+        }
     }
 
     getMessage(): string { return this.message; }

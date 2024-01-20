@@ -23,7 +23,7 @@ class Unit extends Phaser.GameObjects.Sprite {
         this.setDepth(1);
         this.setData('id', unit.id);
         this.setData('selected', false);
-        this.setData('team', WF.clientId);
+        this.setData('team', unit.team);
 
         // GLOBAL STUFF
         this.scene.physics.world.enableBody(this);

@@ -39,13 +39,31 @@ impl Units { pub fn new() -> Self {
         }
     }
 
+    #[allow(dead_code)]
     pub fn add_unit(&mut self, x: i16, y: i16, team: Option<i8>, class: Option<String>, groups: Option<Vec<String>>) {
         let unit = Unit::new(x, y, team, class, groups);
         self.units_map.insert(unit.id, unit);
     }
 
+    pub fn create_unit(&mut self, unit: Unit) {
+        self.units_map.insert(unit.id, unit);
+    }
+
+    #[allow(dead_code)]
     pub fn remove_unit(&mut self, id: u64) {
         self.units_map.remove(&id);
+    }
+
+    // Kinda stupid logic, maybe there is a better optmized way
+    // to do this kind of stuff, but I have no pacient for this rn.
+    pub fn remove_units_from_player(&mut self, team: i8) {
+        for i in self.units_map.clone() {
+            if let Some( unit_team ) = i.1.team {
+                if unit_team == team {
+                    self.units_map.remove(&i.0);
+                }
+            }
+        }
     }
 
     #[allow(dead_code)]
@@ -66,6 +84,7 @@ impl Units { pub fn new() -> Self {
         self.units_map.values().collect()
     }
 
+    /// This function should set new values for units.
     pub fn set_units(&mut self, units: Vec<Unit>) {
         for unit in units {
             if let Some(old_unit) = self.units_map.get_mut(&unit.id) {

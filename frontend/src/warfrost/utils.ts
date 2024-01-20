@@ -36,11 +36,24 @@ function getUnits(message: string) {
 
 function formatObjectsArray(array: Array<object>, objectKeys: Array<string>) {
     const objects = array.map((item: object) => {
-        const properties = objectKeys.map((key: string) => `"${key}": ${item[key]}`).join(', ');
+        const properties = objectKeys.map((key: string) => {
+            if (typeof item[key] === 'string') { return `"${key}": "${item[key]}"`; }
+            else if (typeof item[key] === 'object' && item[key].length == 0) { return `"${key}": []`; } // This shitty logic will break with real objects e.g: {} (not arrays)
+            else { return `"${key}": ${item[key]}`; }
+        }).join(', ');
         return `{${properties}}`;
     });
 
     return `[${objects.join(', ')}]`;
 }
 
-export { formatObjectsArray, getId, getCoordinates, getUnits };
+/// Get random spawn point coordinates
+function getSpawnPoint() {
+    const min = 20;
+    const max = 300;
+    const random_x = Math.floor(Math.random() * (max - min + 1) + min);
+    const random_y = Math.floor(Math.random() * (max - min + 1) + min);
+    return { x: random_x, y: random_y };
+}
+
+export { formatObjectsArray, getId, getCoordinates, getUnits, getSpawnPoint };
