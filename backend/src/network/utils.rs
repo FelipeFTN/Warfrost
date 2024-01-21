@@ -36,7 +36,6 @@ pub fn get_id(text: String) -> Option<u64> {
     }
 }
 
-#[allow(dead_code)]
 pub fn get_coordinates(text: String) -> Option<(i16, i16)> {
     let regex = regex::Regex::new(r"x(\d+)y(\d+)").unwrap();
     if let Some(captures) = regex.captures(&text) {
@@ -48,7 +47,6 @@ pub fn get_coordinates(text: String) -> Option<(i16, i16)> {
     }
 }
 
-#[allow(dead_code)]
 pub fn get_spawn() -> String {
     let min_value = 20;
     let max_value = 300;

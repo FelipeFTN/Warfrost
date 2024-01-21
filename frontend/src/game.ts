@@ -5,7 +5,6 @@ import * as Models from './warfrost/models';
 import Pathfind from './warfrost/pathfind';
 import Socket from './network/websocket';
 import Unit from './warfrost/unit';
-import { formatObjectsArray, getSpawnPoint } from './warfrost/utils';
 
 class Warfrost extends Phaser.Scene {
 
@@ -65,23 +64,6 @@ class Warfrost extends Phaser.Scene {
 
         // Set up selection
         this.selection = new Selection(this);
-
-        // Create units for Player
-        const max_starting_units = 3;
-        let units = [];
-        for (let i = 0; i <= max_starting_units; i++) {
-            const spawnPoint = getSpawnPoint();
-            const unit : Models.UnitData = {
-                id: this.clientId * 3 + i,
-                x: spawnPoint.x,
-                y: spawnPoint.y,
-                team: this.clientId ?? 0,
-                class: "Default",
-                groups: [],
-            }
-            units.push(unit);
-        }
-        this.socket.send(`units::create::${formatObjectsArray(units, ["id", "x", "y", "team", "class"])}`)
     }
 
     // -----------------------------------------------------

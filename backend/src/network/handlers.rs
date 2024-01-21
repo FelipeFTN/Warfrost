@@ -14,6 +14,9 @@ pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, R
         let responder = clients.get(&client_id).unwrap();
 
         match text {
+            text if text.contains("client::start") => {
+                client_start(client_id, units, responder);
+            }
             text if text.contains("units::create") => {
                 units_create(units, text, responder);
             }

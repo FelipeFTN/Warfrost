@@ -4,16 +4,16 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone)]
 #[derive(Serialize, Deserialize)]
 pub struct Unit {
-    id: u64,
-    x: i16,
-    y: i16,
-    team: Option<i8>,
-    class: Option<String>,
-    groups: Option<Vec<String>>,
+    pub id: u64,
+    pub x: i16,
+    pub y: i16,
+    pub team: Option<i8>,
+    pub class: Option<String>,
+    pub groups: Option<Vec<String>>,
 }
 
 impl Unit {
-    fn new(x: i16, y: i16, team: Option<i8>, class: Option<String>, groups: Option<Vec<String>>) -> Self {
+    pub fn new(x: i16, y: i16, team: Option<i8>, class: Option<String>, groups: Option<Vec<String>>) -> Self {
         static mut NEXT_ID: u64 = 0;
 
         // Use unsafe block to increment and assign the ID
@@ -39,13 +39,13 @@ impl Units { pub fn new() -> Self {
         }
     }
 
-    #[allow(dead_code)]
-    pub fn add_unit(&mut self, x: i16, y: i16, team: Option<i8>, class: Option<String>, groups: Option<Vec<String>>) {
+    pub fn create_unit(&mut self, x: i16, y: i16, team: Option<i8>, class: Option<String>, groups: Option<Vec<String>>) {
         let unit = Unit::new(x, y, team, class, groups);
         self.units_map.insert(unit.id, unit);
     }
 
-    pub fn create_unit(&mut self, unit: Unit) {
+    #[allow(dead_code)]
+    pub fn add_unit(&mut self, unit: Unit) {
         self.units_map.insert(unit.id, unit);
     }
 
