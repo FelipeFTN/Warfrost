@@ -94,12 +94,13 @@ class Warfrost extends Phaser.Scene {
         this?.unitsData?.forEach((unit: Models.UnitData) => {
             // If unit already exists, update its position
             if (this.units[unit.id]) {
-                const p = this.units[unit.id];
+                const p: Unit = this.units[unit.id];
                 this.selection.handleSelection(p);
 
                 // Move unit 
                 p.setData("destination", new Phaser.Math.Vector2(unit.x, unit.y));
                 p.move();
+
                 // Update unit in units list
                 this.units[p.id] = p;
                 return;
@@ -111,13 +112,7 @@ class Warfrost extends Phaser.Scene {
             // Set unit into units object
             this.units[p.getId()] = p;
 
-            // Checks for any unit interation
-            p.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
-                if (pointer.leftButtonDown()) {
-                    p.setData('selected', true);
-                }
-            });
-
+            // This doesn't need to run many times
             this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
                 if (pointer.rightButtonReleased()) {
                     if (!p.getData('selected')) return;
@@ -152,7 +147,7 @@ class Warfrost extends Phaser.Scene {
 
     onPointerUp(pointer: Phaser.Input.Pointer): void {
         if (pointer.leftButtonReleased()) {
-            this.selection.endSelection();
+            if (this.selection.isSelecting) { this.selection.endSelection(); }
         }
     }
 

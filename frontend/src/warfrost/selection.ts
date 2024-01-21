@@ -5,7 +5,7 @@ import Warfrost from '../game';
 export class Selection {
     private graphics: Phaser.GameObjects.Graphics;
     private scene: Warfrost;
-    private isSelecting: boolean;
+    public isSelecting: boolean;
     private startPos: Phaser.Math.Vector2;
     private selectionRect: Phaser.Geom.Rectangle;
 
@@ -40,8 +40,8 @@ export class Selection {
     }
 
     handleSelection(unit: Phaser.GameObjects.Sprite): void {
-        if (!this.isSelecting) return;
         const isSelected = unit.getData('selected');
+        if (!this.isSelecting || !isSelected) return;
         // Check for spriting collision with selection zone
         if (Phaser.Geom.Intersects.RectangleToRectangle(unit.getBounds(), this.selectionRect)) {
             if (isSelected) return;

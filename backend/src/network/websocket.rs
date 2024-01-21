@@ -4,6 +4,7 @@ use std::net::TcpListener;
 
 use crate::pathfind::models::Grids;
 use crate::network::handlers::{*};
+use crate::network::utils::{*};
 use crate::game::units::Units;
 
 pub fn network(clients: &mut HashMap<u64, Responder>, units: &mut Units, grids: &mut Grids) {
@@ -25,5 +26,6 @@ pub fn network(clients: &mut HashMap<u64, Responder>, units: &mut Units, grids: 
                 ws_message(client_id, message, clients, units, grids);
             }
         }
+        update_units(clients, units);
     }
 }
