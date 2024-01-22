@@ -14,7 +14,7 @@ COPY --from=warfrost . .
 
 # Set Environment Variables
 ENV PORT=8080
-ENV HOST=172.20.0.2
+ENV HOST=0.0.0.0
 
 # Build Phaser game
 RUN npm run build

@@ -2,6 +2,8 @@
 
 all: warfrost-backend warfrost-frontend create-network run-backend run-frontend
 
+build: warfrost-backend warfrost-frontend
+
 warfrost-backend:
 	docker buildx build --build-context warfrost=backend -t warfrost-backend ./docker/backend || true
 

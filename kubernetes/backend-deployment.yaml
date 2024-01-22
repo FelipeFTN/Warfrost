@@ -6,14 +6,16 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: warfrost-backend
+      app: warfrost
   template:
     metadata:
+      name: warfrost-backend-pod
       labels:
-        app: warfrost-backend
+        app: warfrost
     spec:
       containers:
         - name: warfrost-backend
           image: warfrost-backend:latest
+          imagePullPolicy: Never
           ports:
             - containerPort: 8080

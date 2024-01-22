@@ -39,6 +39,16 @@ Please note that you may need to modify the scripts or Dockerfiles based on your
 
 For more details on customizing the Docker build and run processes, refer to the official Docker documentation at https://docs.docker.com/.
 
+## Kubernetes
+
+In order to run Kubernetes with minikube & kubectl - considering you already have it configurated in your computer - use the following commands to run Warfrost.
+
+- `make build`
+- `kubectl create -f kubernetes/backend-deployment.yaml`
+- `kubectl create -f kubernetes/frontend-deployment.yaml`
+- `kubectl get pods`
+- `kubectl port-forward {wafrost-pod} {port-to}:{port_from}`
+
 ---
 
 This repository is released under the [Apache-2.0 License](../LICENSE). Feel free to use, modify, and distribute the Docker scripts as per the terms of the license.

@@ -7,6 +7,7 @@ COPY --from=warfrost . .
 
 # Set Environment Variables
 ENV PORT=8080
+ENV HOST=0.0.0.0
 
 # Build program for release
 RUN cargo build --release
