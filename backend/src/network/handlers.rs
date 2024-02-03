@@ -10,7 +10,7 @@ use crate::pathfind::models::Grids;
 /// WS Handler: Message from client handler
 pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, Responder>, units: &mut Units, grids: &mut Grids) {
     if let Message::Text(text) = &message {
-        println!("Received a message from client #{}: {}", client_id, text);
+        println!("Client #{}: {}", client_id, text);
         let responder = clients.get(&client_id).unwrap();
 
         match text {

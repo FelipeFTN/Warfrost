@@ -25,21 +25,6 @@ class Unit extends Phaser.GameObjects.Sprite {
         this.setData('selected', false);
         this.setData('team', unit.team);
 
-        // I hate to admit but this fuckin' logic
-        // Just doesn't make sense, not even work
-        // I need to rework this as soon as possible
-        // Clicking over the unit should select it!!
-        // Checks for any unit interation
-        console.log("Setting interactive")
-        this.setInteractive().on("pointerover", (pointer: Phaser.Input.Pointer) => {
-            if (pointer.leftButtonReleased()) {
-                console.log("SELECTED!!!")
-                this.setData('selected', true);
-                WF.selection.handleSelection(this);
-            }
-        });
-        console.log("Setted interactive")
-
         // GLOBAL STUFF
         this.scene.physics.world.enableBody(this);
         this.body.setAllowGravity(false);

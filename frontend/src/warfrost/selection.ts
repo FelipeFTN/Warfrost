@@ -40,22 +40,22 @@ export class Selection {
     }
 
     handleSelection(unit: Phaser.GameObjects.Sprite): void {
-        const isSelected = unit.getData('selected');
-        if (!this.isSelecting || !isSelected) return;
         // Check for spriting collision with selection zone
-        if (Phaser.Geom.Intersects.RectangleToRectangle(unit.getBounds(), this.selectionRect)) {
-            if (isSelected) return;
-            if (this.scene.clientId != unit.getData('team')) return;
-            unit.setTint(0x00ff00);
-            unit.setData('selected', true);
-        } else {
-            if (!isSelected) return;
-            unit.clearTint();
-            unit.setData('selected', false);
+        if (this.isSelecting) {
+            if (Phaser.Geom.Intersects.RectangleToRectangle(unit.getBounds(), this.selectionRect)) {
+                if (this.scene.clientId != unit.getData('team')) return;
+                unit.setTint(0x00ff00);
+                unit.setData('selected', true);
+            } else {
+                unit.clearTint();
+                unit.setData('selected', false);
+            }
         }
     }
 
     endSelection(): void {
+        this.selectionRect.setPosition(0, 0);
+        this.selectionRect.setSize(0, 0);
         this.isSelecting = false;
         this.graphics.clear();
     }

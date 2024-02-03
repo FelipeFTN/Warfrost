@@ -56,6 +56,9 @@ class Warfrost extends Phaser.Scene {
         // Display Map
         this.add.image(0, -300, "map").setOrigin(0);
 
+        // Client start
+        this.socket.send("client::start");
+
         // Unit socket event listener
         this.socket.on("units::update", this);
 

@@ -38,7 +38,7 @@ pub fn units_move(units: &mut Units, text: &String, responder: &Responder) {
 /// This function will give to client everything they need to start playing (units, trops,
 /// resources, house, etc.).
 pub fn client_start(client_id: u64, units: &mut Units, responder: &Responder) {
-    for _ in 0..=3 {
+    for _ in 0..=2 {
         if let Some((x, y)) = get_coordinates(get_spawn()) {
             let team: i8 = client_id.try_into().unwrap(); // Convert to 8 bits integer
             units.create_unit(x, y, Some(team), Some(String::from("Default")), Some(Vec::new()));
