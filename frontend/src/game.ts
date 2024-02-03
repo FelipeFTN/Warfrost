@@ -48,7 +48,7 @@ class Warfrost extends Phaser.Scene {
         this.socket.on("client::id", this);
 
         // Load images
-        this.load.image("map", "assets/map.png");
+        this.load.image("map", "assets/maps/map_0.png");
         this.load.image("unit", "assets/unit.png");
     }
 
@@ -152,6 +152,9 @@ class Warfrost extends Phaser.Scene {
         if (pointer.leftButtonReleased()) {
             if (this.selection.isSelecting) { this.selection.endSelection(); }
         }
+
+        // Set fullscreen
+        if (!this.scale.isFullscreen) { this.scale.startFullscreen(); }
     }
 
     onPointerMove(pointer: Phaser.Input.Pointer): void {
@@ -167,6 +170,13 @@ const config: Phaser.Types.Core.GameConfig = {
     pixelArt: true,
     physics: {
         default: 'arcade'
+    },
+    scale: {
+        mode: Phaser.Scale.NONE,
+        parent: 'Warfrost',
+        autoCenter: Phaser.Scale.NO_CENTER,
+        width: 800,
+        height: 600
     },
 };
 
