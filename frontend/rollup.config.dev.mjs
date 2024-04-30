@@ -69,8 +69,7 @@ export default {
         serve({
             open: true,
             contentBase: 'dist',
-            // host: '0.0.0.0',
-            host: '0.0.0.0',
+            host: '127.0.0.1',
             port: 3000,
             headers: {
                 'Access-Control-Allow-Origin': '*'

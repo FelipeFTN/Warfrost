@@ -3,19 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <style>
-      * {
+      body {
         margin: 0;
         padding: 0;
+
+        /* Hide the scrollbar */
+        overflow: hidden;
       }
-      canvas {
-        /* width: 42%; */
-        width: 100%;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
+      #warfrost {
+        overflow: hidden;
       }
     </style>
     <script src="game.js"></script>
   </head>
-  <body></body>
+  <body>
+    <div id="warfrost"></div>
+  </body>
 </html>

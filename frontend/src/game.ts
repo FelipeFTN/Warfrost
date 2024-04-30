@@ -21,6 +21,12 @@ class Warfrost extends Phaser.Scene {
     public units: object;
 
     public socket: Socket;
+        
+    public screen = this.scale.gameSize;
+
+    public camera = this.cameras.main;
+
+    public speed = 0.01;
 
     constructor() {
         super("Warfrost");
@@ -75,7 +81,7 @@ class Warfrost extends Phaser.Scene {
     // unitData = [{id: 0, x: 10, y: 10}, {...}]
     // -----------------------------------------------------
 
-    update() {
+    update(time: number, delta: number) {
         // Mouse events listener
         this.input.on('pointerdown', this.onPointerDown, this);
         this.input.on('pointermove', this.onPointerMove, this);
@@ -92,6 +98,9 @@ class Warfrost extends Phaser.Scene {
 
         // Unit socket event listener
         this.socket.on("units::update", this);
+
+        // Camera Position
+        this.cameraMovement(this.input.activePointer);
 
         // Create or Update New Units!
         this?.unitsData?.forEach((unit: Models.UnitData) => {
@@ -129,7 +138,7 @@ class Warfrost extends Phaser.Scene {
             });
         });
 
-        if (this.unitsData === undefined) { console.log("Warning: Units Data is Undefined."); }
+        if (this.unitsData === undefined) { console.warn("Warning: Units Data is Undefined."); }
         const unitsIds = this.unitsData?.map((item: Models.UnitData) => item.id);
 
         // Check every units saved into front-end
@@ -139,6 +148,24 @@ class Warfrost extends Phaser.Scene {
                 this.units[id].destroy();
                 delete this.units[id];
             }
+        }
+    }
+
+    // Work in progress - camera movement
+    cameraMovement(pointer: Phaser.Input.Pointer): void {
+        console.log(`variables: \n pointer.x: ${pointer.x} \n pointer.y: ${pointer.y} \n screen.width: ${screen.width} \n screen.height: ${screen.height} \n speed: ${this.speed} \n camera.zoom: ${this.camera.zoom} \n camera.scrollX: ${this.camera.scrollX} \n camera.scrollY: ${this.camera.scrollY} \n`);
+        // Move camera x
+        if (pointer.x <= 10) {
+            this.camera.scrollX = -this.speed / this.camera.zoom;
+        } else if (pointer.x >= screen.width - 10) {
+            this.camera.scrollX = this.speed / this.camera.zoom;
+        }
+
+        // Move camera y
+        if (pointer.y <= 10) {
+            this.camera.scrollY = -this.speed / this.camera.zoom;
+        } else if (pointer.y >= screen.height - 10) {
+            this.camera.scrollY = this.speed / this.camera.zoom;
         }
     }
 
@@ -154,18 +181,19 @@ class Warfrost extends Phaser.Scene {
         }
 
         // Set fullscreen
-        if (!this.scale.isFullscreen) { this.scale.startFullscreen(); }
+        // if (!this.scale.isFullscreen) { this.scale.startFullscreen(); }
     }
 
     onPointerMove(pointer: Phaser.Input.Pointer): void {
+        // Update selection
         this.selection.updateSelection(pointer.x, pointer.y);
     }
 }
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    // width: window.innerWidth,
+    // height: window.innerHeight,
     scene: Warfrost,
     pixelArt: true,
     physics: {
@@ -173,10 +201,10 @@ const config: Phaser.Types.Core.GameConfig = {
     },
     scale: {
         mode: Phaser.Scale.NONE,
-        parent: 'Warfrost',
+        parent: 'warfrost',
         autoCenter: Phaser.Scale.NO_CENTER,
-        width: 800,
-        height: 600
+        // width: window.innerWidth,
+        // height: window.innerHeight 
     },
 };
 
