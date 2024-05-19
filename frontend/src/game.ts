@@ -22,11 +22,15 @@ class Warfrost extends Phaser.Scene {
 
     public socket: Socket;
         
-    public screen = this.scale.gameSize;
+    public screen: Phaser.Structs.Size;
 
-    public camera = this.cameras.main;
+    public camera: Phaser.Cameras.Scene2D.Camera;
 
-    public speed = 0.01;
+    public baseCameraSpeed = 1;
+
+    public cameraSpeed = 1;
+
+    public movingCamera: boolean;
 
     constructor() {
         super("Warfrost");
@@ -39,6 +43,12 @@ class Warfrost extends Phaser.Scene {
     }
 
     preload() {
+        // Set up camera
+        this.camera = this.cameras.main;
+
+        // Set up screen size
+        this.screen = this.scale.gameSize;
+
         // Keep sound running when tab focus change
         this.sound.pauseOnBlur = false;
 
@@ -77,7 +87,7 @@ class Warfrost extends Phaser.Scene {
 
     // -----------------------------------------------------
     // units DATA TYPES:
-    // units    = {id: { Phaser Sprite Object}, id: {...}}
+    // units    = {id: { Phaser Sprite Object }, id: {...}}
     // unitData = [{id: 0, x: 10, y: 10}, {...}]
     // -----------------------------------------------------
 
@@ -153,19 +163,23 @@ class Warfrost extends Phaser.Scene {
 
     // Work in progress - camera movement
     cameraMovement(pointer: Phaser.Input.Pointer): void {
-        console.log(`variables: \n pointer.x: ${pointer.x} \n pointer.y: ${pointer.y} \n screen.width: ${screen.width} \n screen.height: ${screen.height} \n speed: ${this.speed} \n camera.zoom: ${this.camera.zoom} \n camera.scrollX: ${this.camera.scrollX} \n camera.scrollY: ${this.camera.scrollY} \n`);
+        console.log(`variables: \n pointer.x: ${pointer.x} \n pointer.y: ${pointer.y} \n screen.width: ${this.screen.width} \n screen.height: ${this.screen.height} \n camera.zoom: ${this.camera.zoom} \n camera.scrollX: ${this.camera.scrollX} \n camera.scrollY: ${this.camera.scrollY} \n camera.width: ${this.camera.width} \n camera.height: ${this.camera.height}`);
         // Move camera x
         if (pointer.x <= 10) {
-            this.camera.scrollX = -this.speed / this.camera.zoom;
-        } else if (pointer.x >= screen.width - 10) {
-            this.camera.scrollX = this.speed / this.camera.zoom;
+            this.camera.scrollX -= this.cameraSpeed;
+            this.cameraSpeed += this.cameraSpeed * 0.1;
+        } else if (pointer.x >= this.camera.width - 20) {
+            this.camera.scrollX += this.cameraSpeed;
+            this.cameraSpeed += this.cameraSpeed * 0.1;
         }
 
         // Move camera y
         if (pointer.y <= 10) {
-            this.camera.scrollY = -this.speed / this.camera.zoom;
-        } else if (pointer.y >= screen.height - 10) {
-            this.camera.scrollY = this.speed / this.camera.zoom;
+            this.camera.scrollY -= this.cameraSpeed;
+            this.cameraSpeed += 0.2;
+        } else if (pointer.y >= this.camera.height - 20) {
+            this.camera.scrollY += this.cameraSpeed;
+            this.cameraSpeed += this.cameraSpeed * 0.2;
         }
     }
 
@@ -181,7 +195,7 @@ class Warfrost extends Phaser.Scene {
         }
 
         // Set fullscreen
-        // if (!this.scale.isFullscreen) { this.scale.startFullscreen(); }
+        if (!this.scale.isFullscreen) { this.scale.startFullscreen(); }
     }
 
     onPointerMove(pointer: Phaser.Input.Pointer): void {
