@@ -110,7 +110,7 @@ class Warfrost extends Phaser.Scene {
         this.socket.on("units::update", this);
 
         // Camera Position
-        this.cameraMovement(this.input.activePointer);
+        // this.cameraMovement(this.input.activePointer);
 
         // Create or Update New Units!
         this?.unitsData?.forEach((unit: Models.UnitData) => {
@@ -195,7 +195,7 @@ class Warfrost extends Phaser.Scene {
         }
 
         // Set fullscreen
-        if (!this.scale.isFullscreen) { this.scale.startFullscreen(); }
+        // if (!this.scale.isFullscreen) { this.scale.startFullscreen(); }
     }
 
     onPointerMove(pointer: Phaser.Input.Pointer): void {
