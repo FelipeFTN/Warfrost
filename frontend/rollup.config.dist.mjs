@@ -33,7 +33,7 @@ export default {
             'typeof PLUGIN_CAMERA3D': JSON.stringify(false),
             'typeof PLUGIN_FBINSTANT': JSON.stringify(false),
             'typeof FEATURE_SOUND': JSON.stringify(true),
-            'process.env.HOST': JSON.stringify(process.env.HOST || "localhost"),
+            'process.env.HOST': JSON.stringify(process.env.HOST || "127.0.0.1"),
             'process.env.PORT': JSON.stringify(process.env.PORT || "8080"),
         }),
 

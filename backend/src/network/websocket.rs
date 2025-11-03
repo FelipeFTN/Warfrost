@@ -11,6 +11,7 @@ pub fn network(clients: &mut HashMap<u64, Responder>, units: &mut Units, grids: 
     // Listen for WebSockets on port 8080
     // TODO: Get the port from environment variable
     let listener = TcpListener::bind("0.0.0.0:8080").unwrap();
+    println!("Listening on port 8080...");
     let event_hub = simple_websockets::launch_from_listener(listener).expect("failed to listen on port 8080.");
 
     // map between client ids & client's 'Responder'
