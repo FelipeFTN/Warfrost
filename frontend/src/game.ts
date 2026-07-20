@@ -18,7 +18,7 @@ class Warfrost extends Phaser.Scene {
 
     public selected: string;
 
-    public units: object;
+    public units: Record<number, Unit>;
 
     public socket: Socket;
         
