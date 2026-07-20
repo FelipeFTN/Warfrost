@@ -194,6 +194,11 @@ class Warfrost extends Phaser.Scene {
             if (this.selection.isSelecting) { this.selection.endSelection(); }
         }
 
+        // Flash a marker where selected units were ordered to move
+        if (pointer.rightButtonReleased() && this.hasSelectedUnits()) {
+            this.showMoveMarker(pointer.worldX, pointer.worldY);
+        }
+
         // Set fullscreen
         // if (!this.scale.isFullscreen) { this.scale.startFullscreen(); }
     }
@@ -201,6 +206,25 @@ class Warfrost extends Phaser.Scene {
     onPointerMove(pointer: Phaser.Input.Pointer): void {
         // Update selection
         this.selection.updateSelection(pointer.x, pointer.y);
+    }
+
+    // Whether the player currently has at least one unit selected
+    hasSelectedUnits(): boolean {
+        return Object.values(this.units).some((unit: Unit) => unit.getData('selected'));
+    }
+
+    // Flash a ring at a move-order destination for quick visual feedback
+    showMoveMarker(x: number, y: number): void {
+        const marker = this.add.circle(x, y, 8, 0x00ff00, 0);
+        marker.setStrokeStyle(2, 0x00ff00, 1);
+        marker.setDepth(3);
+        this.tweens.add({
+            targets: marker,
+            scale: { from: 1.4, to: 0.2 },
+            alpha: { from: 1, to: 0 },
+            duration: 350,
+            onComplete: () => marker.destroy(),
+        });
     }
 }
 
