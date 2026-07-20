@@ -3,4 +3,3 @@ pub mod warfrost;
 pub mod models;
 pub mod units;
 pub mod handlers;
-pub mod pathfind;
