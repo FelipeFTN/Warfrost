@@ -83,6 +83,11 @@ class Warfrost extends Phaser.Scene {
 
         // Set up selection
         this.selection = new Selection(this);
+
+        // Mouse event listeners — registered once here instead of every frame
+        this.input.on('pointerdown', this.onPointerDown, this);
+        this.input.on('pointermove', this.onPointerMove, this);
+        this.input.on('pointerup', this.onPointerUp, this);
     }
 
     // -----------------------------------------------------
@@ -92,11 +97,6 @@ class Warfrost extends Phaser.Scene {
     // -----------------------------------------------------
 
     update(time: number, delta: number) {
-        // Mouse events listener
-        this.input.on('pointerdown', this.onPointerDown, this);
-        this.input.on('pointermove', this.onPointerMove, this);
-        this.input.on('pointerup', this.onPointerUp, this);
-
         // Pathfind
         // this.pathfind.draw();
 
