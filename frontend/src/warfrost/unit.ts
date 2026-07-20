@@ -81,6 +81,10 @@ class Unit extends Phaser.GameObjects.Sprite {
         this.drawHealthBar();
         const destination : Phaser.Math.Vector2 = this.getData("destination");
         if (destination == null) { return; }
+
+        // Face the direction of travel
+        this.setFlipX(destination.x < this.x);
+
         if (this.speed > 0) {
             // This should make the unit stop properly
             if (Phaser.Math.Distance.BetweenPoints(this, destination) <= 2) { 
