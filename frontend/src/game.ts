@@ -106,6 +106,9 @@ class Warfrost extends Phaser.Scene {
             const zoom = this.camera.zoom - dy * 0.001;
             this.camera.setZoom(Phaser.Math.Clamp(zoom, 0.5, 2));
         });
+
+        // Stop command — halt selected units where they stand
+        this.input.keyboard.on('keydown-S', this.stopSelectedUnits, this);
     }
 
     // -----------------------------------------------------
@@ -278,6 +281,20 @@ class Warfrost extends Phaser.Scene {
         this.deselectAll();
         unit.setTint(0x00ff00);
         unit.setData('selected', true);
+    }
+
+    // Stop every selected unit at its current position
+    stopSelectedUnits(): void {
+        const selected = Object.values(this.units).filter((unit: Unit) => unit.getData('selected'));
+        if (selected.length === 0) return;
+
+        const payload = selected.map((unit: Unit) => {
+            const pos = unit.getPosition();
+            unit.setData("destination", new Phaser.Math.Vector2(pos.x, pos.y));
+            return `{"id": ${unit.id}, "x": ${Math.floor(pos.x)}, "y": ${Math.floor(pos.y)}}`;
+        }).join(",");
+
+        this.socket.send(`units::move::[${payload}]`);
     }
 
     // Flash a ring at a move-order destination for quick visual feedback
