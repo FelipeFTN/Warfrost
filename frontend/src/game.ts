@@ -5,6 +5,7 @@ import * as Models from './warfrost/models';
 import Pathfind from './warfrost/pathfind';
 import Socket from './network/websocket';
 import Unit from './warfrost/unit';
+import Hud from './warfrost/hud';
 
 class Warfrost extends Phaser.Scene {
 
@@ -15,6 +16,8 @@ class Warfrost extends Phaser.Scene {
     public clientId: number;
 
     public selection: Selection;
+
+    public hud: Hud;
 
     public selected: string;
 
@@ -66,6 +69,7 @@ class Warfrost extends Phaser.Scene {
         // Load images
         this.load.image("map", "assets/maps/map_0.png");
         this.load.image("unit", "assets/unit.png");
+        this.load.image("hud", "assets/HUD.png");
     }
 
     create() {
@@ -83,6 +87,9 @@ class Warfrost extends Phaser.Scene {
 
         // Set up selection
         this.selection = new Selection(this);
+
+        // Set up HUD
+        this.hud = new Hud(this);
 
         // Mouse event listeners — registered once here instead of every frame
         this.input.on('pointerdown', this.onPointerDown, this);
@@ -159,6 +166,14 @@ class Warfrost extends Phaser.Scene {
                 delete this.units[id];
             }
         }
+
+        // Refresh the HUD with the current selection count
+        this.hud?.update(this.selectedUnitsCount());
+    }
+
+    // Number of units currently selected
+    selectedUnitsCount(): number {
+        return Object.values(this.units).filter((unit: Unit) => unit.getData('selected')).length;
     }
 
     // Work in progress - camera movement
