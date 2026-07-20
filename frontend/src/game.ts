@@ -35,6 +35,8 @@ class Warfrost extends Phaser.Scene {
 
     public movingCamera: boolean;
 
+    public cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+
     constructor() {
         super("Warfrost");
         
@@ -95,6 +97,15 @@ class Warfrost extends Phaser.Scene {
         this.input.on('pointerdown', this.onPointerDown, this);
         this.input.on('pointermove', this.onPointerMove, this);
         this.input.on('pointerup', this.onPointerUp, this);
+
+        // Arrow keys pan the camera (S is reserved for the stop command)
+        this.cursors = this.input.keyboard.createCursorKeys();
+
+        // Mouse wheel zooms the camera, clamped to a sensible range
+        this.input.on('wheel', (pointer: Phaser.Input.Pointer, over: any, dx: number, dy: number) => {
+            const zoom = this.camera.zoom - dy * 0.001;
+            this.camera.setZoom(Phaser.Math.Clamp(zoom, 0.5, 2));
+        });
     }
 
     // -----------------------------------------------------
@@ -116,8 +127,12 @@ class Warfrost extends Phaser.Scene {
         // Unit socket event listener
         this.socket.on("units::update", this);
 
-        // Camera Position
-        // this.cameraMovement(this.input.activePointer);
+        // Camera panning with the arrow keys
+        const panSpeed = 8;
+        if (this.cursors.left.isDown)  this.camera.scrollX -= panSpeed;
+        if (this.cursors.right.isDown) this.camera.scrollX += panSpeed;
+        if (this.cursors.up.isDown)    this.camera.scrollY -= panSpeed;
+        if (this.cursors.down.isDown)  this.camera.scrollY += panSpeed;
 
         // Create or Update New Units!
         this?.unitsData?.forEach((unit: Models.UnitData) => {
@@ -146,11 +161,13 @@ class Warfrost extends Phaser.Scene {
                 if (pointer.rightButtonReleased()) {
                     if (!p.getData('selected')) return;
 
-                    const mouse_vector = pointer.position;
-                    p.setData("destination", new Phaser.Math.Vector2(mouse_vector));
+                    // Use world coordinates so orders stay correct when the camera pans/zooms
+                    const worldX = pointer.worldX;
+                    const worldY = pointer.worldY;
+                    p.setData("destination", new Phaser.Math.Vector2(worldX, worldY));
 
                     // Needs formatation to send units::update::[{id: 0, x: 10, y: 10...}, {...}]
-                    this.socket.send(`units::move::[{"id": ${p.id}, "x": ${Math.floor(mouse_vector.x)}, "y": ${Math.floor(mouse_vector.y)}}]`);
+                    this.socket.send(`units::move::[{"id": ${p.id}, "x": ${Math.floor(worldX)}, "y": ${Math.floor(worldY)}}]`);
                 }
             });
         });
