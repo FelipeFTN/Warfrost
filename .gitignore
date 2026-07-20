@@ -1,0 +1,7 @@
+# Archives — keep the extracted assets in-tree, not the .zip alongside them
+*.zip
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
