@@ -1,7 +1,7 @@
 use simple_websockets::{Message, Responder};
 use std::collections::HashMap;
 
-use crate::game::network::{*};
+use crate::game::handlers::{*};
 use crate::network::utils::{*};
 use crate::game::units::Units;
 use crate::pathfind::models::Grids;
