@@ -185,6 +185,15 @@ class Warfrost extends Phaser.Scene {
 
     onPointerDown(pointer: Phaser.Input.Pointer): void {
         if (pointer.leftButtonDown()) {
+            // Left-click directly on one of your units selects just that unit
+            const clicked = this.getUnitAt(pointer.worldX, pointer.worldY);
+            if (clicked) {
+                this.selectOnly(clicked);
+                return;
+            }
+
+            // Otherwise clear any selection and start a box selection
+            this.deselectAll();
             this.selection.startSelection(pointer.x, pointer.y);
         }
     }
@@ -211,6 +220,32 @@ class Warfrost extends Phaser.Scene {
     // Whether the player currently has at least one unit selected
     hasSelectedUnits(): boolean {
         return Object.values(this.units).some((unit: Unit) => unit.getData('selected'));
+    }
+
+    // Return the player's own unit under the given world coordinates, if any
+    getUnitAt(x: number, y: number): Unit | null {
+        for (const id in this.units) {
+            const unit: Unit = this.units[id];
+            if (this.clientId != unit.getData('team')) continue;
+            if (Phaser.Geom.Rectangle.Contains(unit.getBounds(), x, y)) return unit;
+        }
+        return null;
+    }
+
+    // Clear selection state (tint + flag) on every unit
+    deselectAll(): void {
+        for (const id in this.units) {
+            const unit: Unit = this.units[id];
+            unit.clearTint();
+            unit.setData('selected', false);
+        }
+    }
+
+    // Select a single unit, deselecting all others
+    selectOnly(unit: Unit): void {
+        this.deselectAll();
+        unit.setTint(0x00ff00);
+        unit.setData('selected', true);
     }
 
     // Flash a ring at a move-order destination for quick visual feedback
