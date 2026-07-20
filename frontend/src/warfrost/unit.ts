@@ -9,6 +9,8 @@ class Unit extends Phaser.GameObjects.Sprite {
     public team : number;
     private speed : number = 100; // TODO: Acceleration too
     private health : number = 100;
+    private maxHealth : number = 100;
+    private healthBar : Phaser.GameObjects.Graphics;
     public unit : Phaser.GameObjects.Sprite;
     private WF : Warfrost;
 
@@ -29,6 +31,11 @@ class Unit extends Phaser.GameObjects.Sprite {
         this.scene.physics.world.enableBody(this);
         this.body.setAllowGravity(false);
         this.scene.add.existing(this);
+
+        // Health bar drawn just above the unit
+        this.healthBar = this.scene.add.graphics();
+        this.healthBar.setDepth(2);
+        this.drawHealthBar();
     }
 
     // Getters & Setters
@@ -45,8 +52,33 @@ class Unit extends Phaser.GameObjects.Sprite {
         return false;
     }
 
+    // Draw a small health bar above the unit, tracking its current position
+    drawHealthBar() {
+        const width = 14;
+        const height = 3;
+        const x = this.x - width / 2;
+        const y = this.y - this.height / 2 - 5;
+        const frac = Phaser.Math.Clamp(this.health / this.maxHealth, 0, 1);
+
+        this.healthBar.clear();
+        // Dark backing for contrast
+        this.healthBar.fillStyle(0x000000, 0.6);
+        this.healthBar.fillRect(x - 1, y - 1, width + 2, height + 2);
+        // Fill, colored by remaining health
+        const color = frac > 0.5 ? 0x00ff00 : frac > 0.25 ? 0xffff00 : 0xff0000;
+        this.healthBar.fillStyle(color, 1);
+        this.healthBar.fillRect(x, y, width * frac, height);
+    }
+
+    // Keep the health bar in sync and clean it up with the unit
+    destroy(fromScene?: boolean) {
+        this.healthBar?.destroy();
+        super.destroy(fromScene);
+    }
+
     // This should make the unit move properly
     move() {
+        this.drawHealthBar();
         const destination : Phaser.Math.Vector2 = this.getData("destination");
         if (destination == null) { return; }
         if (this.speed > 0) {
