@@ -33,7 +33,8 @@ pub fn ws_message(client_id: u64, message: Message, clients: &mut HashMap<u64, R
                 responder.send(Message::Text(String::from("Error: Unhandled message from Server")));
             }
         }
-        update_units(clients, units);
+        // Note: the caller (network loop) broadcasts updated units after every
+        // event, so there's no need to broadcast again here.
     }
 }
 
